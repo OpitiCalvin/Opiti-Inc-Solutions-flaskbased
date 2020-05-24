@@ -1,0 +1,168 @@
+<html>
+	<head>	
+	<title>Map-GIS WebMapper - OpitiConsulting</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.css') }}" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+	<!-- <link rel="stylesheet" type="text/css" href="../lib/dist/DataTables/datatables.min.css"> -->
+	<link href="{{ url_for('static', filename='mapGIS/css/styles.css') }}" rel="stylesheet" type="text/css" media="all" />
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/globe.ico') }}">
+	<style>
+		.leaflet-popup-content{
+			max-width: 250px !important;;
+			max-height: 200px !important;;
+			overflow-x: auto !important;;
+			overflow-y: auto !important;
+		}
+</style>
+
+</head>
+<body>
+
+	<!-- <div class="header-w3layouts" style="padding-top:62px;"> -->
+	<wrapper class="d-flex flex-column">
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+			<div class="container">
+				<a class="navbar-brand" href="{{ url_for('mapper.mapper_index') }}">MAP-GIS WebMapper</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggle-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<!-- <li class="nav-item active">
+							<a class="nav-link" href="index.html">App Home
+								<span class="sr-only">(current)</span>
+							</a>
+						</li> -->
+						<li class="nav-item">
+							<a id="aboutDemo" class="nav-link" href="">About Demo</a>
+						</li>
+						
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('site.index')}}" target="_blank">Opiti Inc: Solutions</a>
+						</li>
+						<!-- <li class="nav-item">
+							<a class="nav-link" href="">Blog</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">Contact</a>
+						</li> -->
+					</ul>
+				</div>
+			</div>
+		</nav>
+	<!-- </div> -->
+	<!-- //header -->
+	
+		<main class="container-fluid py-3 flex-fill" style="margin:50px 0 0 0;">
+			<div class="row" style="margin:0 10px;">
+				<div id="mapid" class="col-md-9" style="height: 85vh;"></div>
+				<div id="tools"  class="col-md-3">
+					<div id="accordion">
+						<h3>Load Data</h3>
+						<div>					
+							<p> The following data types are accepted:</p>
+							<ol>
+								<li>Zipped Shapefile</li>
+								<li>GeoJSON File</li>
+							</ol><br>
+							<input type="file" id="file_input" multiple>
+						</div>
+						<h3>View GeoJSON</h3>
+						<div id="geojson_content">
+							<p>
+								GeoJSON content here
+							</p>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="aboutModalLabel">About MapGIS Application</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<p>This application aims at providing a quick, online and easy to visualize WebMap Viewer for your <strong>zipped ESRI Shapefiles</strong> or <strong>GeoJSON</strong> spatial data formats.</p>
+					<p>You do not have to unzip your files or use a GIS software to get a quick view, with information window/popup, for your spatial files</p>
+					<p style="text-align: center;"><span style="color: blue;">Just MapGIS it</span></p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</main>
+	
+		<footer class="container-fluid w-100 bg-dark text-light py-3">
+			<!-- Footer -->    
+			<div class="container">
+				<p class="m-0 text-center text-white">Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> | &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> </p>
+			</div>
+		</footer>
+	</wrapper>
+
+
+	<!-- <script  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+
+	<script type="text/javascript" src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
+	
+	<!-- <script type="text/javascript" src="../lib/dist/DataTables/datatables.min.js"></script> -->
+	<script>
+		$(function(){
+			$("#aboutModal").modal('show');
+		})
+		$( function() {
+			$( "#accordion" ).accordion();
+		});
+
+	</script>
+	
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/leaflet_plugins/leaflet-geoip.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='mapGIS/js/main.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='mapGIS/js/tools.js') }}"></script>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		
+		gtag('config', 'UA-106069296-1');
+	</script>
+	<!-- <script type="text/javascript">
+		$(function(){
+			$("#popTable").DataTable({
+				"pageLength":5
+			});
+		});
+		
+	</script> -->
+	<script type="text/javascript">
+		$("#aboutDemo").on('click', function(e){
+			e.preventDefault();
+			$("#aboutModal").modal('show');
+		});
+	</script>
+</body>
+</html>

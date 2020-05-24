@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block styles %}
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+<link href="{{ url_for('static', filename='js_libs/intl-tel-input/css/intlTelInput.min.css')}}" rel="stylesheet">
+<style type="text/css">
+	.hiddenField {
+		display: None;
+	}
+	.asteriskField {
+		color: red;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-5 col-md-push-1 animate-box">			
+			<div class="fh5co-contact-info">
+				<h3>Contact Information</h3>
+				<ul>
+					<li class="address">1066 Burnertt Street, <br> Hatfield, Pretoria, South Africa</li>
+					<li class="phone"><a href="tel://810622237">+ 27 81 062 2237</a></li>
+					<li class="email"><a href="mailto:opiticalvin@gmail.com">opiticalvin@gmail.com</a></li>
+					<li class="url"><a href="https://www.opiticonsulting.com">Opiti Inc</a></li>
+				</ul>
+			</div>
+
+		</div>
+		<div class="col-md-6 animate-box">
+			<h3>Get In Touch</h3>
+			<form action="{{ url_for('site.contact') }}" method="POST" end>
+				<div class="row form-group">
+					<div class="col-md-6">
+						<label for="fname">First Name</label>
+						<input type="text" id="fname" name="fname" class="form-control" placeholder="Your firstname" required>
+					</div>
+					<div class="col-md-6">
+						<label for="lname">Last Name</label>
+						<input type="text" id="lname" name="lname" class="form-control" placeholder="Your lastname" required>
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-md-6">
+						<label for="phone">Phone</label>
+						<input type="tel" id="phone" name="phone" class="form-control" placeholder="012345678" required>
+					</div>
+					<div id="phone_valid" class="form-group hiddenField"></div>
+					<div class="col-md-6">
+						<label for="country">Country</label>
+						<input type="text" id="country" name="country" class="form-control" placeholder="Country" required readonly>
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-md-12">
+						<label for="email">Email</label>
+						<input type="email" id="email" name="email" class="form-control" placeholder="Your email address" required>
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-md-12">
+						<label for="subject">Subject</label>
+						<input type="text" id="subject" name="subject" class="form-control" placeholder="Your subject of this message" required>
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="col-md-12">
+						<label for="message">Message</label>
+						<textarea name="message" id="message" name="message" cols="30" rows="10" class="form-control" placeholder="Your message here" required></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<input id="saveForm" type="submit" value="Send Message" class="btn btn-lg btn-primary">
+				</div>
+
+			</form>		
+		</div>
+	</div>
+			
+</div>
+{% endblock %}
+{% block scripts%}
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/intl-tel-input/js/intlTelInput.min.js')}}"></script>
+<script>
+	var input = document.querySelector('#phone');
+  	// var phone = document.getElementById("phone");
+  	var country = document.getElementById("country");
+
+  	// var iti = intlTelInput(input,{
+  	window.iti = window.intlTelInput(input,{
+  		nationalMode: true,
+  		placeholderNumberType: "FIXED_LINE_OR_MOBILE",
+      	preferredCountries: [ "za", "ke", "us", "gb" ],
+      	utilsScript: "{{ url_for('static', filename='js_libs/intl-tel-input/js/utils.js') }}",
+  	});
+  	
+	// input.addEventListener("change", updateValue);
+
+	// function updateValue(e){
+	// 	// e.preventDefault();
+	// 	var num = iti.getNumber(),
+	// 	valid = iti.isValidNumber();
+	// 	if (valid == false){
+	// 		alert("Please enter valid number.")
+	// 	} else {
+	// 		var count = iti.getSelectedCountryData();
+	// 		// console.log(count['dialCode']);
+	// 		country.value = count['name'];
+	// 		phone.value = num;
+	// 	}
+ 	// }
+
+ 	$("#phone").on('change', function(){
+ 		let numb = intlTelInputUtils.formatNumber(iti.getNumber(), null, intlTelInputUtils.numberFormat.NATIONAL);
+ 		if (iti.isValidNumber()){
+ 			iti.setNumber(numb);
+ 			country.value = iti.getSelectedCountryData()['name'];
+ 			$("#phone_valid").addClass('hiddenField');
+ 			$("#saveForm").prop('disabled', false);
+ 		} else {
+ 			$("#phone_valid").removeClass('hiddenField');
+ 			$("#phone_valid").html("Please enter a valid number!").css("color", "red");
+ 			$("#saveForm").prop('disabled', true);
+ 		}
+ 	});
+
+ 	input.addEventListener('countrychange', function(){
+ 		let numb = intlTelInputUtils.formatNumber(iti.getNumber(), null, intlTelInputUtils.numberFormat.NATIONAL);
+ 		if (iti.isValidNumber()){
+ 			iti.setNumber(numb);
+ 			country.value = iti.getSelectedCountryData()['name'];
+ 		} else {
+ 			if (phone.value){
+ 				$("#phone_valid").removeClass('hiddenField');
+	 			$("#phone_valid").html("Please enter a valid number!").css("color", "red");
+	 			$("#saveForm").prop('disabled', true);
+ 			}
+ 		}
+ 	});
+
+</script>
+{% endblock %}

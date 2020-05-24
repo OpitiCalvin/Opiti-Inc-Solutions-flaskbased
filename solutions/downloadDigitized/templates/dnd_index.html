@@ -1,0 +1,185 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<title>D&amp;D: Digitize &amp; Download</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A webGIS solution for on-screen feature digitization and downloading as ESRI Shapefile or GeoJSON file.">
+	<meta name="author" content="Calvin Opiti, https://opiticonsulting.com">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.css') }}" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/globe.ico') }}">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='downloadDigitized/css/jquery.jsonPresenter.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='downloadDigitized/css/default.css') }}">
+
+
+	<style>
+		html {
+			height: 100%;
+			/*overflow-y: scroll;*/
+		}
+		#map {
+		  /*min-height: 500px;*/
+		  height: 85vh;
+		}
+		.button {
+			background-color: Crimson;  
+			border-radius: 5px;
+			color: white;
+			padding: .5em;
+			text-decoration: none;
+		}
+			.button:focus,
+			.button:hover {
+			background-color: FireBrick;
+			color: White;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<wrapper class="d-flex flex-column">
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+			<div class="container">
+				<a class="navbar-brand" href="{{ url_for('dnd_app.dnd_index') }}">D&amp;D: Digitize and Download</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggle-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="{{ url_for('dnd_app.dnd_index') }}">App Home
+								<span class="sr-only">(current)</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a id="aboutDemo" class="nav-link" href="">About Demo</a>
+						</li>
+						
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('site.index')}}" target="_blank">Opiti Inc Solutions</a>
+						</li>
+						<!-- <li class="nav-item">
+							<a class="nav-link" href="">Blog</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">Contact</a>
+						</li> -->
+					</ul>
+				</div>
+			</div>
+		</nav>
+	<!-- //header -->
+
+	<main class="container-fluid py-3 flex-fill" style="margin:50px 0 0 0;">
+		<div class="row" style="margin:0 10px;">
+			<div id="map" class="col-lg-9 col-md-9 col-sm-12"></div>
+			<div id="tools" class="col-lg-3 col-md-3 col-sm-12" >
+				<div id="accordion">
+					<h3>Data Export</h3>
+					<div>					
+						<p> Select download format option:</p>
+						<select id="outputFormat" name="outputFormat" class="form-control">
+							<option value="GeoJSON" selected>GeoJSON (default)</option>
+							<option value="ESRI Shapefile">ESRI Shapefile</option>
+						</select>
+						<!-- <ol>
+							<li>Zipped Shapefile</li>
+							<li>GeoJSON File</li>
+						</ol> -->
+						<br>
+						<input type="button" id="export" value="Export Features" />						
+					</div>					
+					<h3>Rendered GeoJSON</h3>
+					<div id="json-container">
+					</div>
+					<!-- <h3>Data Download</h3>
+					<div>
+						<a href="#" id='download' class="button js-button" role="button">Download Data</a>
+					</div> -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="aboutModalLabel">About MapGIS Application</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">×</span>
+				</button>
+			  </div>
+			  <div class="modal-body">
+				<p>This application aims at providing a quick, online and easy platform to digitize geographic features and download to your local computer. The application allows for downloads in <strong>ESRI Shapefiles</strong> or <strong>GeoJSON</strong> spatial data formats.</p>
+				<p style="text-align: center;">Enjoy using this application as I did developing it.<br> For issues and recommendations, dont hesitate to shoot me a <a href="mailTo:opiticalvin@gmail.com">mail</a>.</p>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+			  </div>
+			</div>
+		  </div>
+		</div>
+	</main>
+	
+	<footer class="container-fluid w-100 bg-dark text-light py-3">
+			<!-- Footer -->    
+			<div class="container">
+				<p class="m-0 text-center text-white">Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> | &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> </p>
+			</div>
+		</footer>
+	</wrapper>
+
+
+	<!-- <script  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+	
+    <script src="https://cdn.rawgit.com/mejackreed/Leaflet-IIIF/v2.0.1/leaflet-iiif.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='downloadDigitized/js/turf_v5-1-6.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='downloadDigitized/js/jquery.jsonPresenter.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='downloadDigitized/js/digitizer.js') }}"></script>
+	<script>
+		$(function(){
+			$("#aboutModal").modal('show');
+		})
+		$( function() {
+			$( "#accordion" ).accordion();
+		});
+
+	</script>
+	<!-- <script type="text/javascript">
+		$('#json-container').jsonPresenter({'expandAll'});
+		$('#geojson_data').jsonPresenter({'expandAll'});
+	</script> -->
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+  		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+		
+  		gtag('config', 'UA-106069296-1');
+	</script>
+	<script type="text/javascript">
+		$("#aboutDemo").on('click', function(e){
+			e.preventDefault();
+			$("#aboutModal").modal('show');
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<head>
+	<title>WebGIS Viewer: Debt Management System</title>
+	<meta charset=utf-8>
+    <meta name=description content="A web map application for municipal debt management.">
+	<meta name="keywords" content="Debt Management Demo, opiticonsulting, opiti spatial">
+	<meta name="author" content="Calvin Opiti">
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+		
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="../lib/dist/jquery-ui-1.12.1/jquery-ui.min.css">
+	<link rel="stylesheet" href="../lib/dist/datatables/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="../lib/dist/datatables/css/responsive.dataTables.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/css/ol.css">
+	<link rel="stylesheet" type="text/css" href="https://rawgit.com/walkermatt/ol-layerswitcher/master/src/ol-layerswitcher.css">
+	<link rel="stylesheet" href="./css/ol_popup.css">
+	<link rel="stylesheet" href="./css/tables.css">
+	
+	<style>
+		body, wrapper {
+		   min-height:100vh;
+		}
+		#canvas {
+		    min-height: 100%;
+		}
+
+		#mainstage {
+		    overflow: auto;
+		}
+
+		#footer {
+		  left: 0;
+		  bottom: 0;
+		  width: 100%;
+		  clear: both;
+		  height: 100px; 
+		  margin-top: -151px; 
+		  font-size: 16;
+		  text-rendering: auto;
+		  position: fixed;
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		}
+	#map{
+		position: relative;
+	}
+	#mouse-position{
+		position: absolute;
+		bottom: 5px;
+		left: .5em;
+		z-index: 100;
+	}
+	.ol-overviewmap {
+		left: .5em;
+		bottom: 2.0em;
+	}
+	.hideDiv{
+		display: none;
+	}
+	#SummaryStats{
+		<!-- position: absolute; -->
+		z-index: 1001;
+		top: 10px;
+		left: 10%;
+		display: table;
+		margin: 0 auto;
+	}
+	.iconItems li{
+		padding: 0 10px;
+		float: left;
+		margin: 0px 5px 5px 0px;
+		text-transform: uppercase;
+	}
+	.items li
+	{
+		float: left;
+		margin: 0px 5px 5px 0px;
+		text-transform: uppercase;
+	}
+  
+	.items li .outerContainer
+	{
+		display: table;
+		height: 100px;
+		overflow: hidden;
+		width: 130px;
+		background-color: #EBEBEB;
+		border-bottom: 1px solid #CCCCCC;
+		border-right: 1px solid #CCCCCC;
+	}
+	  
+	.items li .outerContainer:Hover
+	{
+		background-color: #757171;
+	}
+
+	.items li .outerContainer .innerContainer
+	{
+		display: table-cell;
+		vertical-align: middle;
+		width: 100%;
+		margin: 0 auto;
+		text-align: center;
+		font-size: 14px;
+	}
+	  
+	.items li .outerContainer .innerContainer .element a
+	{
+		color: #999999;
+		text-decoration: none;
+		padding: 0px 10px;
+		display: block;
+	}
+	  
+	.items li .outerContainer:Hover .innerContainer .element a
+	{
+		color: #FFFFFF;
+		text-decoration: none;  	  
+	}
+	
+	.icon-bar {
+		width: 100%; /* Full-width */
+		background-color: #555; /* Dark-grey background */
+		overflow: auto; /* Overflow due to float */
+	}
+
+	.icon-bar a {
+		float: right; /* Float links side by side */
+		text-align: center; /* Center-align text */
+		width: 60px; /* Equal width (5 icons with 20% width each = 100%) */
+		padding: 0 10px; /* Some top and bottom padding */
+		transition: all 0.3s ease; /* Add transition for hover effects */
+		color: white; /* White text color */
+		font-size: 36px; /* Increased font size */
+	}
+	.icon-bar button {
+		float: right; /* Float links side by side */
+		text-align: center; /* Center-align text */
+		width: 60px; /* Equal width (5 icons with 20% width each = 100%) */
+		padding: 0 10px; /* Some top and bottom padding */
+		transition: all 0.3s ease; /* Add transition for hover effects */
+		color: white; /* White text color */
+		font-size: 20px; /* Increased font size */
+	}
+
+	.icon-bar a:hover {
+		background-color: #000; /* Add a hover color */
+	}
+
+	.active {
+		background-color: #4CAF50; /* Add an active/current color */
+	}
+	 /* Style buttons */
+	.btn {
+		background-color: DodgerBlue; /* Blue background */
+		border: none; /* Remove borders */
+		color: white; /* White text */
+		padding: 12px 16px; /* Some padding */
+		font-size: 16px; /* Set a font size */
+		cursor: pointer; /* Mouse pointer on hover */
+	}
+
+	/* Darker background on mouse-over */
+	.btn:hover {
+		background-color: RoyalBlue;
+	} 
+	</style>
+<body>
+<wrapper class="d-flex flex-column">
+	<div id="headerSection" style="margin: 0 10px;height:50px; position:relative;background-color: bisque;">
+		<div id="Header" style="float:right;width:85%;">
+			<div><h3>WebGIS Viewer: Debt Management System</h3>
+			</div>
+			<!-- <div><p>Sub Header</p></div> -->
+		</div>
+		<div id="Logo" style="">
+			 <img src="icons/placeholder-logo.png" alt="Smiley face" height="60" width="180"> 
+		</div>
+	</div>
+	<main class="container-fluid py-3 flex-fill">
+		<div id="mapSection" style="">
+			<div id="mapTools" style="width:100%;height:15%;">
+				<div class="icon-bar">
+					<button class="btn" title="Search"><i class="fa fa-search"></i></button>
+					<button class="btn" title="Print"><i class="fa fa-print"></i></button>
+					<button id="statsBtn" class="btn" title="View Statistics"><i class="fas fa-chart-pie"></i></button>
+					<button class="btn" title="Legend"><i class="fa fa-bars"></i></button>
+					<button id="attribBtn" class="btn" title="Attribute Table"><i class="fa fa-table"></i></button>
+				</div>				
+			</div>
+			<div id="map" style="height: 82vh;">
+				<div id="mouse-position" style="background-color: bisque;"></div>
+			</div>
+			<div id="mapFooter" style="margin:0 10px;padding-top: 5px;background-color: #fcf8e3;">
+			<div id='stats' class="hideDiv">
+				<div id="SummaryStats" class="items">
+					<ul style="list-style:none;">  
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id='featCountStats' class="element"></div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id="SumAmountStats" class="element"></div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id="meanAmountStats" class="element"></div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id="maxStats" class="element"></div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id="minStats" class="element"></div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="outerContainer">
+								<div class="innerContainer">
+									<div id="limitStats" class="element"></div>
+								</div>
+							</div>
+						</li>
+					  
+					</ul>
+				</div>
+				</div>
+				<div id="tabs" class="hideDiv">
+					<ul>
+						<li><a href="#tabs-1">Buildings Layer</a></li>
+						<li><a href="#tabs-2">Wards Layer</a></li>
+						<li><a href="#tabs-3">Province Layer</a></li>
+						<li><a href="#tabs-4">City of Johannesburg</a></li>
+					</ul>
+					<div id="tabs-1">
+						<div id="buildingTable">			
+					</div>
+					</div>
+					<div id="tabs-2">
+						<div id="wardsTable">
+					</div>
+					</div>
+					<div id="tabs-3">
+						<div id="provinceTable"></div>
+					</div>
+					<div id="tabs-4">
+						<div id="jhbCityTable"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="popup" class="ol-popup">
+			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+			<div id="popup-content"></div>
+		</div>
+		<!-- <div id="footerSection" class="py-5 bg-dark" style="margin: 0 10px;height:10%;background-color: #ede5f0;">
+			<div class="container">
+				<p class="m-0 text-center text-white">&copy; | Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> <script type="text/javascript">document.write(new Date().getFullYear());</script> </p>
+			</div>
+		</div> -->
+	</main>
+	<footer class="container-fluid w-100 bg-dark text-light py-3">
+		<!-- Footer -->    
+		<div class="container">
+			<p class="m-0 text-center text-white">Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> | &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> </p>
+		</div>
+	</footer>
+</wrapper>
+
+	
+	<script src="../lib/dist/jquery/jquery.min.js"></script>
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/jquery-3.2.1.min.js"></script> -->
+	<script type="text/javascript" src="../lib/dist/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../lib/dist/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../lib/dist/datatables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../lib/dist/datatables/js/dataTables.responsive.min.js"></script>
+	
+    <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/build/ol.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/walkermatt/ol-layerswitcher/master/dist/ol-layerswitcher.js"></script>
+	<script type="text/javascript" src="./js/debtorGeoJSONData.js"></script>
+	<script type="text/javascript" src="./js/styleGeoJSON.js"></script>
+	<script type="text/javascript" src="./js/geojson2table.js"></script>
+    <script type="text/javascript" src="./js/debtor.js"></script>
+	<script type="text/javascript" src="./js/bldg_ol_popup.js"></script>
+	<script type="text/javascript" src="./js/zoom2Feature.js"></script>
+	<script type="text/javascript" src="./js/dataTableConfigs.js"></script>
+	<script type="text/javascript" src="./js/computeStatistics.js"></script>
+	<script type="text/javascript" src="./js/interactions.js"></script>
+	<script>
+		$( function() {
+			$( "#tabs" ).tabs();
+		} );
+	</script>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+  		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+		
+  		gtag('config', 'UA-106069296-1');
+	</script>
+</body>
+</head>
