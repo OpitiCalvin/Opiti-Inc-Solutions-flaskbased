@@ -33,8 +33,8 @@ class ProductionConfig(Config):
 	"""
 	
 	TESTING = False
-	# SECRET_KEY = uuid.uuid4().hex
-	SECRET_KEY = os.getenv("SECRET_KEY")
+	SECRET_KEY = uuid.uuid4().hex
+	# SECRET_KEY = os.getenv("SECRET_KEY")
 	# SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % literal_eval(os.getenv("POSTGRES")) # for postgresql
 	CUSTOM_DB_FLAG = 'production'
 	DEBUG = False
@@ -47,10 +47,8 @@ class ProductionConfig(Config):
 	
 if os.getenv('APP_ENV') == 'development':
 	app_config = DevelopmentConfig
-elif os.getenv('APP_ENV') == 'production':
-	app_config = ProductionConfig
 else:
-	exit()
+	app_config = ProductionConfig
 
 # app_config = {
 # 	'development': DevelopmentConfig,
