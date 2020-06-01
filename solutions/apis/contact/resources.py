@@ -8,7 +8,7 @@ message_schema = MessageSchema()
 messages_query_schema = MessageQuerySchema(many=True)
 message_query_schema = MessageQuerySchema()
 
-ns_messages = Namespace("Contact Messages", description="Management of contacts and messages from my website.")
+ns_messages = Namespace("messages", description="Management of contacts and messages from my website.")
 
 message_model = ns_messages.model(
     "Messages Model",

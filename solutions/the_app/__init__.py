@@ -42,8 +42,8 @@ def register_blueprints(app):
 
 	# API section
 	
-	from apis.contact import msg_bp
-	app.register_blueprint(msg_bp, url_prefix="/api/messages")
+	from apis import blueprint
+	app.register_blueprint(blueprint, url_prefix="/api")
 
 	# Solutions section
 	
