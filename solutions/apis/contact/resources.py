@@ -67,7 +67,7 @@ class MessagesResource(Resource):
         }
 
         
-        data = request.get_json()
+        data = request.get_json(force=True)
         if not data:
             return abort(
                 400,
