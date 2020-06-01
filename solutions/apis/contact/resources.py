@@ -67,23 +67,17 @@ class MessagesResource(Resource):
         }
 
         
-        data = request.get_json(force=True)
+        data = request.get_json()
         if not data:
             return abort(
                 400,
-                code = 400,
-                message = "Bad Request: No input data provided.",
-                errors = None,
-                data = []
+                message = "Bad Request: No input data provided."
             )
         validation_errors = message_schema.validate(data)
         if validation_errors:
             return abort(
                 400,
-                code = 400,
-                message = f"Bad Request: Schema validation Errors: {validation_errors}",
-                errors = None,
-                data=[]
+                message = f"Bad Request: Schema validation Errors: {validation_errors}"
             )
 
         if "phone" in data.keys():
@@ -123,10 +117,7 @@ class MessagesResource(Resource):
             db.session.rollback()
             return abort(
                 422,
-                code = 422,
-                message= "Unprocessable entiry occurred.",
-                errors= e.args,
-                data = []
+                message= "Unprocessable entiry occurred."
             )
 
 @ns_messages.route("/<message_id>")
