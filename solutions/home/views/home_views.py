@@ -19,7 +19,7 @@ def contact():
 			# print(data)
 
 			msg = {
-				"name": data['fname'] +' ' + data['lname'],
+				"name": data['name'],
 				"email": data['email'],
 				"phone": data['phone'],
 				"country": data['country'],
@@ -29,7 +29,7 @@ def contact():
 			# print(f"msg: {msg}")
 
 			try:
-				url = "https://blog.opiticonsulting.com/api/contacts/"
+				url = "https://solutions.opiticonsulting.com/api/messages/"
 				response = requests.post(url, json = msg)
 				if response.status_code == 200:
 					flash("Message successfully sent.")
