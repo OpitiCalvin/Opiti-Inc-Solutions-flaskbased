@@ -66,41 +66,42 @@ class MessagesResource(Resource):
             "data":[]
         }
 
-        try:
-            data = request.get_json(force=True)
-            if not data:
-                return abort(
-                    400,
-                    code = 400,
-                    message = "Bad Request: No input data provided.",
-                    errors = None,
-                    data = []
-                )
-            validation_errors = message_schema.validate(data)
-            if validation_errors:
-                return abort(
-                    400,
-                    code = 400,
-                    message = f"Bad Request: Schema validation Errors: {validation_errors}",
-                    errors = None,
-                    data=[]
-                )
+        
+        data = request.get_json(force=True)
+        if not data:
+            return abort(
+                400,
+                code = 400,
+                message = "Bad Request: No input data provided.",
+                errors = None,
+                data = []
+            )
+        validation_errors = message_schema.validate(data)
+        if validation_errors:
+            return abort(
+                400,
+                code = 400,
+                message = f"Bad Request: Schema validation Errors: {validation_errors}",
+                errors = None,
+                data=[]
+            )
 
-            if "phone" in data.keys():
-                phone = data["phone"]
-            else:
-                phone = None
+        if "phone" in data.keys():
+            phone = data["phone"]
+        else:
+            phone = None
 
-            if "country" in data.keys():
-                country = data["country"]
-            else:
-                country = None
+        if "country" in data.keys():
+            country = data["country"]
+        else:
+            country = None
 
-            if "country_code" in data.keys():
-                country_code = data["country_code"]
-            else:
-                country_code = None
+        if "country_code" in data.keys():
+            country_code = data["country_code"]
+        else:
+            country_code = None
             
+        try:
             message = MessageModel(
                 name = data["name"],
                 email = data["email"],
