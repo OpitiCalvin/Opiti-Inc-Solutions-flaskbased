@@ -1,6 +1,13 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 from pathlib import Path
+
+db = SQLAlchemy()
+# ma = Marshmallow()
+migrate = Migrate()
 
 def create_app():
 	r"""
@@ -9,7 +16,7 @@ def create_app():
 	"""
 
 	app = Flask(__name__, instance_relative_config=True, static_folder='../static')
-	app.config.from_object("config.app_config")
+	app.config.from_object("config.Config")
 
 	if not Path(app.instance_path).exists():
 		Path(app.instance_path).mkdir(parents=True, exist_ok=True)
@@ -24,13 +31,22 @@ def initialize_extension(app):
 
 	"""
 
-	pass
+	db.init_app(app)
+	# ma.init_app(app)
+	migrate.init_app(app)
 
 def register_blueprints(app):
 	r"""
 
 	"""
 
+	# API section
+	
+	from apis.contact import msg_bp
+	app.register_blueprint(msg_bp, url_prefix="/api/messages")
+
+	# Solutions section
+	
 	from home.views import site as home_bp
 	app.register_blueprint(home_bp, url_prefix="")
 
