@@ -14,8 +14,6 @@ class Config(object):
 	else:
 		FLASK_ENV = 'development'
 	
-	print(os.environ.get("FLASK_ENV"))
-
 	if FLASK_ENV == 'development':
 		DEBUG = True
 		SECRET_KEY = os.getenv("SECRET_KEY")
