@@ -26,11 +26,11 @@ class MessageModel(db.Model):
     def __repr__(self):
         return f"{contact_id}: name: {name}, subject: {subject}"
 
-    def __init__(self, name, email, subject, message):
-        self.name = name
-        self.email = email
-        self.subject = subject
-        self.message = message
+    # def __init__(self, name, email, subject, message):
+    #     self.name = name
+    #     self.email = email
+    #     self.subject = subject
+    #     self.message = message
 
     @classmethod
     def find_by_name(cls, name):
