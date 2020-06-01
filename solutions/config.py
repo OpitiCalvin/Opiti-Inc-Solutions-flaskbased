@@ -9,48 +9,35 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
 	"""Parent configuration class."""
 
-	DEBUG = False	
+	if "FLASK_ENV" in os.environ:
+		FLASK_ENV = os.environ.get("FLASK_ENV")
+	else:
+		FLASK_ENV = 'development'
 	
+	print(os.environ.get("FLASK_ENV"))
 
-class DevelopmentConfig(Config):
-	"""Configuration for development environment."""
-	
-	DEBUG = True
-	SECRET_KEY = os.getenv("SECRET_KEY")
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance', 'opiti_inc_solns.sqlite')
-	# SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % literal_eval(os.getenv("POSTGRES")) # for postgresql
-	
-	CUSTOM_DB_FLAG = 'local'
+	if FLASK_ENV == 'development':
+		DEBUG = True
+		SECRET_KEY = os.getenv("SECRET_KEY")
+		SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance', 'opiti_inc_solutions.sqlite')
+		
+	else:
+		TESTING = False
+		SECRET_KEY = uuid.uuid4().hex
+		# SECRET_KEY = os.getenv("SECRET_KEY")
+		if 'POSTGRES' in os.environ:
+			POSTGRES = json.loads(os.environ.get('POSTGRES'))
+		elif "PGUSER" in os.environ and "PGPW" in os.environ and "PGHOST" in os.environ and "PGPORT" in os.environ and "PGDB" in os.environ:
+			POSTGRES = dict(user=os.environ.get("PGUSER"),pw=os.environ.get("PGPW"),host=os.environ.get("PGHOST"),port=os.environ.get("PGPORT"),db=os.environ.get("PGDB"))
+		else:
+			print("Postgresql configuration parameters not found.")	
+			exit(1)
+		
+		SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+		CUSTOM_DB_FLAG = 'production'
+		DEBUG = False
+		
+		JSON_SORT_KEYS = False
+
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
-	# UPLOADS_DEFAULT_DEST = os.path.join(basedir, 'geofarmer_apis','uploads')
-	# UPLOADED_IMAGES_DEST = os.path.join(basedir, 'geofarmer_apis','uploads', 'logo')
-	# UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'geofarmer_apis','uploads', 'disp_pic')
-
-class ProductionConfig(Config):
-	"""
-	Configurations for Production Environment.
-
-	"""
-	
-	TESTING = False
-	SECRET_KEY = uuid.uuid4().hex
-	# SECRET_KEY = os.getenv("SECRET_KEY")
-	# SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % literal_eval(os.getenv("POSTGRES")) # for postgresql
-	CUSTOM_DB_FLAG = 'production'
-	DEBUG = False
-	SQLALCHEMY_TRACK_MODIFICATIONS = False
-	JSON_SORT_KEYS = False
-	# UPLOADS_DEFAULT_DEST = os.path.join(basedir, 'geofarmer_api','uploads')
-	# UPLOADED_IMAGES_DEST = os.path.join(basedir, 'geofarmer_api','uploads', 'logo')
-	# UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'geofarmer_api','uploads', 'disp_pic')
-
-	
-if os.getenv('APP_ENV') == 'development':
-	app_config = DevelopmentConfig
-else:
-	app_config = ProductionConfig
-
-# app_config = {
-# 	'development': DevelopmentConfig,
-# 	'production': ProductionConfig,
-# }
+	PROPAGAGE_EXCEPTIONS = True
