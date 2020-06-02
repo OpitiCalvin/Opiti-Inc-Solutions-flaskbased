@@ -1,9 +1,11 @@
 from flask import Blueprint
 from flask_restx import Api
+from flask_cors import CORS
 
 from .contact.resources import ns_messages
 
 blueprint = Blueprint("api", __name__)
+CORS(blueprint) # enable CORS on the api blueprint
 
 api = Api(
     blueprint,
