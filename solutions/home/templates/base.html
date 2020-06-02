@@ -58,6 +58,10 @@
   	</div>
   </nav>
 
+  {% for info_message in get_flashed_messages() %}
+    <div id="flashMessage" class="alert alert-info alert-dismissible">{{ info_message }}</div>
+  {% endfor %}
+    
 	<!-- Page Content -->
   <div class="container" style="padding-top:60px;">
     {% block body %}
@@ -79,6 +83,11 @@
   <script src="{{ url_for('static', filename='js_libs/jquery/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js_libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
+  <script type="text/javascript">
+    setTimeout(function(){
+      $("#flashMessage").fadeOut('fast');
+    }, 3000);
+  </script>
   {% block scripts%} {% endblock %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>

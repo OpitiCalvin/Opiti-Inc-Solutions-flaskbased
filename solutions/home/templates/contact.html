@@ -29,11 +29,11 @@
 		</div>
 		<div class="col-md-6 animate-box">
 			<h3>Get In Touch</h3>
-			<form action="{{ url_for('site.contact') }}" method="POST" end>
+			<form id="msgForm" action="{{ url_for('site.contact') }}" method="POST">
 				<div class="row form-group">
 					<div class="col-md-12">
 						<label for="name">Names</label>
-						<input type="text" id="name" name="name" class="form-control" placeholder="Your name(s)" required>
+						<input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
 					</div>
 					<!-- <div class="col-md-6">
 						<label for="lname">Last Name</label>
@@ -44,12 +44,13 @@
 				<div class="row form-group">
 					<div class="col-md-6">
 						<label for="phone">Phone</label>
-						<input type="tel" id="phone" name="phone" class="form-control" placeholder="012345678" required>
+						<input type="tel" id="phone" name="phone" class="form-control" placeholder="012345678">
 					</div>
 					<div id="phone_valid" class="form-group hiddenField"></div>
 					<div class="col-md-6">
 						<label for="country">Country</label>
-						<input type="text" id="country" name="country" class="form-control" placeholder="Country" required readonly>
+						<input type="text" id="country" name="country" class="form-control" placeholder="Country" readonly>
+						<input type="text" id="country_code" name="country_code" class="form-control hiddenField" placeholder="Country Code" readonly>
 					</div>
 				</div>
 
@@ -74,7 +75,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<input id="saveForm" type="submit" value="Send Message" class="btn btn-lg btn-primary">
+					<input id="submitBtn" type="submit" value="Send Message" class="btn btn-lg btn-primary">
 				</div>
 
 			</form>		
@@ -85,6 +86,7 @@
 {% endblock %}
 {% block scripts%}
 <script type="text/javascript" src="{{ url_for('static', filename='js_libs/intl-tel-input/js/intlTelInput.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/Flash-Toast-Notification/flash.min.js')}}"></script>
 <script>
 	var input = document.querySelector('#phone');
   	// var phone = document.getElementById("phone");
@@ -98,33 +100,18 @@
       	utilsScript: "{{ url_for('static', filename='js_libs/intl-tel-input/js/utils.js') }}",
   	});
   	
-	// input.addEventListener("change", updateValue);
-
-	// function updateValue(e){
-	// 	// e.preventDefault();
-	// 	var num = iti.getNumber(),
-	// 	valid = iti.isValidNumber();
-	// 	if (valid == false){
-	// 		alert("Please enter valid number.")
-	// 	} else {
-	// 		var count = iti.getSelectedCountryData();
-	// 		// console.log(count['dialCode']);
-	// 		country.value = count['name'];
-	// 		phone.value = num;
-	// 	}
- 	// }
-
- 	$("#phone").on('change', function(){
+	$("#phone").on('change', function(){
  		let numb = intlTelInputUtils.formatNumber(iti.getNumber(), null, intlTelInputUtils.numberFormat.NATIONAL);
  		if (iti.isValidNumber()){
  			iti.setNumber(numb);
  			country.value = iti.getSelectedCountryData()['name'];
+ 			$("#country_code").val(iti.getSelectedCountryData()['iso2']);
  			$("#phone_valid").addClass('hiddenField');
- 			$("#saveForm").prop('disabled', false);
+ 			$("#submitBtn").prop('disabled', false);
  		} else {
  			$("#phone_valid").removeClass('hiddenField');
  			$("#phone_valid").html("Please enter a valid number!").css("color", "red");
- 			$("#saveForm").prop('disabled', true);
+ 			$("#submitBtn").prop('disabled', true);
  		}
  	});
 
@@ -133,14 +120,14 @@
  		if (iti.isValidNumber()){
  			iti.setNumber(numb);
  			country.value = iti.getSelectedCountryData()['name'];
+ 			$("#country_code").val(iti.getSelectedCountryData()['iso2']);
  		} else {
  			if (phone.value){
  				$("#phone_valid").removeClass('hiddenField');
 	 			$("#phone_valid").html("Please enter a valid number!").css("color", "red");
-	 			$("#saveForm").prop('disabled', true);
+	 			$("#submitBtn").prop('disabled', true);
  			}
  		}
  	});
-
 </script>
 {% endblock %}

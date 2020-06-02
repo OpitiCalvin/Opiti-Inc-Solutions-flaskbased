@@ -1,7 +1,9 @@
-from . import site
+from the_app import db
+from flask import render_template, redirect, url_for, request, flash
+# import requests
 
-from flask import render_template, redirect, url_for, request
-import requests
+from . import site
+from apis.contact.models import MessageModel
 
 @site.route('/', methods=['GET'])
 def index():
@@ -18,37 +20,35 @@ def contact():
 			data = request.form.to_dict()
 			# print(data)
 
-			msg = {
-				"name": data['name'],
-				"email": data['email'],
-				"phone": data['phone'],
-				"country": data['country'],
-				"subject": data['subject'],
-				"message": data['message']
-			}
-			# print(f"msg: {msg}")
+			if "phone" in data.keys():
+				phone = data["phone"]
+			else:
+				phone = None
 
-			try:
-				url = "https://solutions.opiticonsulting.com/api/messages"
-				response = requests.post(url, json = msg)
-				if response.status_code == 200:
-					flash("Message successfully sent.")
-					return redirect(url_for('site.contact'))					
-				else:
-					response.raise_for_status()
-			except requests.exceptions.HTTPError as errh:
-			    return "An Http Error occurred:" + repr(errh)
-			except requests.exceptions.ConnectionError as errc:
-			    return "An Error Connecting to the API occurred:" + repr(errc)
-			except requests.exceptions.Timeout as errt:
-			    return "A Timeout Error occurred:" + repr(errt)
-			except requests.exceptions.RequestException as err:
-			    return "An Unknown Error occurred" + repr(err)
+			if "country" in data.keys():
+				country = data["country"]
+			else:
+				country = None
+
+			msg = MessageModel(
+				name = data['name'],
+				email = data['email'],
+				phone = phone,
+				country = country,
+				subject = data['subject'],
+				message = data['message']
+			)
+
+			db.session.add(msg)
+			db.session.commit()
+
+			flash("Message successfully sent.")
+			return redirect(url_for('site.contact'))					
 
 		except Exception as error:
-			# db.session.rollback()
-			print(error)
-			flash("An error occurred.")
+			db.session.rollback()
+			# print(error)
+			flash("An error occurred. Message NOT sent!")
 			return redirect(url_for('site.contact'))
 			
 	return render_template('contact.html')
