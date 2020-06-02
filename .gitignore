@@ -111,4 +111,4 @@ dmypy.json
 .env
 
 instance/
-versions/
+migrations/
