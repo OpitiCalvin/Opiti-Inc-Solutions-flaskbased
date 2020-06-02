@@ -49,6 +49,9 @@ class MessageSchema(Schema):
 
     name = fields.String(required=True)
     email = fields.String(required=True)
+    phone = fields.String(required=False)
+    country = fields.String(required=False)
+    country_code = fields.String(required=False)
     subject = fields.String(required=True)
     message = fields.String(required = True)
 
