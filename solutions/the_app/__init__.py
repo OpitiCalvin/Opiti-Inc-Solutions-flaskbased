@@ -2,12 +2,16 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager
+from flask_login import LoginManager
 
 from pathlib import Path
 
 db = SQLAlchemy()
 # ma = Marshmallow()
 migrate = Migrate()
+jwt = JWTManager()
+login_manager = LoginManager()
 
 def create_app():
 	r"""
@@ -34,6 +38,8 @@ def initialize_extension(app):
 	db.init_app(app)
 	# ma.init_app(app)
 	migrate.init_app(app)
+	jwt.init_app(app)
+	login_manager.init_app(app)
 
 def register_blueprints(app):
 	r"""
@@ -46,6 +52,8 @@ def register_blueprints(app):
 	app.register_blueprint(blueprint, url_prefix="/api")
 
 	# Solutions section
+	from admin.views import admin as admin_bp
+	app.register_blueprint(admin_bp, url_prefix="/admin")
 	
 	from home.views import site as home_bp
 	app.register_blueprint(home_bp, url_prefix="")

@@ -2,8 +2,19 @@ from the_app import db
 from flask import render_template, redirect, url_for, request, flash
 # import requests
 
+from the_app import login_manager
+from apis.auth.models.api_users import UserModel
 from . import site
 from apis.contact.models import MessageModel
+
+@login_manager.user_loader
+def user_loader(user_id):
+	r"""
+	Given `user_id`, return the associated User object.
+
+	"""
+
+	return UserModel.query.get(user_id)
 
 @site.route('/', methods=['GET'])
 def index():
@@ -29,12 +40,18 @@ def contact():
 				country = data["country"]
 			else:
 				country = None
+			
+			if "country_code" in data.keys():
+				country_code = data["country_code"]
+			else:
+				country_code = None
 
 			msg = MessageModel(
 				name = data['name'],
 				email = data['email'],
 				phone = phone,
 				country = country,
+				country_code = country_code,
 				subject = data['subject'],
 				message = data['message']
 			)
@@ -47,7 +64,7 @@ def contact():
 
 		except Exception as error:
 			db.session.rollback()
-			# print(error)
+			print(error)
 			flash("An error occurred. Message NOT sent!")
 			return redirect(url_for('site.contact'))
 			
