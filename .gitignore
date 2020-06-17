@@ -110,5 +110,8 @@ dmypy.json
 # End of https://www.gitignore.io/api/python
 .env
 
+# vscode related
+*.code-workspace
+
 instance/
 migrations/
