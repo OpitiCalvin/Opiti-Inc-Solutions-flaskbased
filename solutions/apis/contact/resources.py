@@ -1,6 +1,7 @@
 from the_app import db
 from flask import request, jsonify, make_response
 from flask_restx import Namespace, Resource, fields, abort
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from .models import MessageModel, MessageQuerySchema, MessageSchema
 
@@ -8,7 +9,7 @@ message_schema = MessageSchema()
 messages_query_schema = MessageQuerySchema(many=True)
 message_query_schema = MessageQuerySchema()
 
-ns_messages = Namespace("messages", description="Management of contacts and messages from my website.")
+ns_messages = Namespace("Management of Contact Messages", description="Management of contacts and messages from my website.")
 
 message_model = ns_messages.model(
     "Messages Model",
@@ -26,9 +27,10 @@ class MessagesResource(Resource):
     ns_messages.doc(
         responses = {
             200: "Success", 404: "Not Found",
-            404: "Bad Request", 500: "Internal Server Error"
+            400: "Bad Request", 500: "Internal Server Error"
         }
     )
+    @jwt_required
     def get(self):
         r"""
         Retrieves all messages from the database.
@@ -42,17 +44,30 @@ class MessagesResource(Resource):
             "data":[]
         }
 
-        messages = MessageModel.query.all()
-        json_response["code"] = 200
-        json_response["message"] = "Query for messages successful."
-        json_response["data"] = messages_query_schema.dump(messages)
+        auth_token_info = get_jwt_identity()
+        if auth_token_info['role'] == 1:
+            messages = MessageModel.query.all()
+            if not messages:
+                return abort(
+                        404,
+                        message = "No messages found."
+                    )
+            json_response["code"] = 200
+            json_response["message"] = "Query for messages successful."
+            json_response["data"] = messages_query_schema.dump(messages)
 
-        return jsonify(json_response)
+            return jsonify(json_response)
 
+        else:
+            return abort(
+                401,
+                "Access Denied: Unauthorized Access."
+            )
+        
     ns_messages.doc(
         responses = {
             200: "Success", 404: "Not Found",
-            404: "Bad Request", 500: "Internal Server Error"
+            400: "Bad Request", 500: "Internal Server Error"
         }
     )
     @ns_messages.expect(message_model)
@@ -117,7 +132,7 @@ class MessagesResource(Resource):
             db.session.rollback()
             return abort(
                 422,
-                message= "Unprocessable entiry occurred."
+                message= f"Unprocessable entiry occurred.{e.args}"
             )
 
 @ns_messages.route("/<message_id>")
@@ -125,10 +140,11 @@ class MessageResource(Resource):
     @ns_messages.doc(
         responses = {
             200: "Success", 404: "Not Found",
-            404: "Bad Request", 500: "Internal Server Error"
+            400: "Bad Request", 500: "Internal Server Error"
         },
         params={"message_id": "Unique identifier for the message record."}
     )
+    @jwt_required
     def get(self, message_id):
         r"""
         Retrieves a single message record.
@@ -147,18 +163,71 @@ class MessageResource(Resource):
             "data":[]
         }
 
-        message = MessageModel.query.filter_by(message_id = message_id).first()
-        if not message:
+        auth_token_info = get_jwt_identity()
+        if auth_token_info['role'] == 1:
+            message = MessageModel.query.filter_by(message_id = message_id).first()
+            if not message:
+                return abort(
+                    404,
+                    message= "Not Found: Message record not found.",
+                    errors= None,
+                    data = []
+                )
+
+            json_response["code"] = 200
+            json_response["message"] = "Query for message record successful."
+            json_response["data"] = [message_query_schema.dump(message)]
+
+            return jsonify(json_response)
+        else:
             return abort(
-                404,
-                code = 404,
-                message= "Not Found: Message record not found.",
-                errors= None,
-                data = []
+                401,
+                "Access Denied: Unauthorized Access."
             )
 
-        json_response["code"] = 200
-        json_response["message"] = "Query for message record successful."
-        json_response["data"] = [message_query_schema.dump(message)]
+    @ns_messages.doc(
+        responses = {
+            200: "Success", 404: "Not Found",
+            400: "Bad Request", 500: "Internal Server Error"
+        },
+        params={"message_id": "Unique identifier for the message record."}
+    )
+    @jwt_required
+    def delete(self, message_id):
+        r"""
+        Deletes a single message record.
 
-        return jsonify(json_response)
+        parameters
+
+            message_id: int, required
+                A unique identifier for a message record.
+
+        """
+
+        json_response = {
+            "code": 400,
+            "message": None,
+            "errors": None,
+            "data":[]
+        }
+
+        auth_token_info = get_jwt_identity()
+        if auth_token_info['role'] == 1:
+            msg = MessageModel.query.filter_by(message_id = message_id).first()
+            if not msg:
+                return abort(
+                    404,
+                    f"Not Found: No message record found with id {message_id}"
+                )
+            db.session.delete(msg)
+            db.session.commit()
+
+            json_response['code'] = 200
+            json_response['message'] = "Message record successfully deleted."
+
+            return jsonify(json_response)
+        else:
+            return abort(
+                401,
+                "Access Denied: Unauthorized Access."
+            )

@@ -1,5 +1,5 @@
 from the_app import db
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from marshmallow import Schema, fields
 
@@ -9,7 +9,7 @@ class MessageModel(db.Model):
 
     """
 
-    __table_name__ = 'message'
+    __tablename__ = 'message'
 
     message_id = Column(Integer, primary_key = True, autoincrement = True)
     name = Column(String(50), nullable = False)
@@ -19,12 +19,13 @@ class MessageModel(db.Model):
     country_code = Column(String(3), nullable = True)
     subject = Column(String(20), nullable = False)
     message = Column(String(250), nullable = False)
+    is_read = Column(Boolean, default=False)
 
     # audit tracking
     created = Column(DateTime(timezone = True), server_default = func.now())
 
     def __repr__(self):
-        return f"{contact_id}: name: {name}, subject: {subject}"
+        return f"{self.message_id}: name: {self.name}, subject: {self.subject}"
 
     # def __init__(self, name, email, subject, message):
     #     self.name = name
@@ -67,3 +68,4 @@ class MessageQuerySchema(Schema):
     subject = fields.String()
     message = fields.String()
     created = fields.Date()
+    is_read = fields.Boolean()
