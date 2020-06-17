@@ -1,0 +1,351 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/css/responsive.bootstrap4.min.css') }}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="breadcrumb">
+	<a class="breadcrumb-item" href="{{ url_for('admin.admin_index') }}">Home</a>
+	<span class="breadcrumb-item active" href="{{ url_for('admin.view_messages') }}">Messages</span>
+</div>
+
+<!-- <div class="container-fluid"> -->
+<div>
+    <h1 class="text-center">Contact Messages</h1>
+</div>
+<!-- </div> -->
+
+<hr>
+<!-- <div class="container-fluid"> -->
+<div>
+    {% if messages %}
+    <table id="messagesTable" class="table table-striped" style="width:100%">
+    <!-- <table id="placesTable" class="display responsive nowrap" style="width:100%"> -->
+        <thead>
+            <tr>
+                <th class="th-sm text-center">ID</th>
+                <th class="th-sm text-center">Name</th>
+                <th class="th-sm text-center">E-Mail</th>
+                <th class="th-sm text-center">Subject</th>
+                {% if current_user.role_id ==1 %}
+                <th class="th-sm text-center">Created</th>
+                <th class="th-sm text-center">Tools</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in messages %}
+            <tr>
+                <td class="text-center align-middle">{{ message.message_id }}</td>
+                <td class="text-center align-middle">{{ message.name }}</a>
+                </td>
+                <td class="text-center align-middle">{{ message.email }}</td>
+                {% if not message.is_read %}
+                <td class="text-center align-middle" style="font-weight: bold;">{{ message.subject }}</td>
+                {% else%}
+                <td class="text-center align-middle">{{ message.subject }}</td>
+                {% endif %}
+                {% if current_user.role_id ==1 %}
+                <td class="text-center align-middle">{{ message.created }}</td>
+                <td class="text-center align-middle">                    
+                    <div class="btn-group-vertical">
+                        <button class="btn btn-outline-success btn-sm" data-message-id="{{ message.message_id }}"
+                            data-message-subject="{{ message.subject }}" data-toggle="modal" data-target="#read-message"
+                            style="font-size: 10px; min-width:110px; margin:2px;"><i class="fas fa-trash"></i> Read Message
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" data-message-id="{{ message.message_id }}"
+                        data-message-subject="{{ message.subject }}" data-toggle="modal" data-target="#confirm-delete"
+                            style="font-size: 10px; min-width:110px; margin:2px;"><i class="fas fa-trash"></i> Delete Message
+                        </button>
+                    </div>                    
+                </td>
+                {% endif %}                    
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="th-sm text-center">ID</th>
+                <th class="th-sm text-center">Name</th>
+                <th class="th-sm text-center">E-Mail</th>
+                <th class="th-sm text-center">Subject</th>
+                {% if current_user.role_id ==1 %}
+                <th class="th-sm text-center">Created</th>
+                <th class="th-sm text-center">Tools</th>
+                {% endif %}
+            </tr>
+        </tfoot>
+    </table>
+
+    <div hidden id="spinner"></div>
+    <!-- Read Message modal -->
+    <div class="modal fade" id="read-message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Contact Message</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p>ID: <i class="msgId"></i> - Subject: <b><i class="title"></i></b>.</p>
+                    <form class="form-horizontal" id="messageForm" action="" method="post">
+                        <div class="form-group row">
+                            <!-- <label class="control-label col-sm-4" for="name">Contact Name</label> -->
+                            <div class="col-md-6">
+                                <input class='form-control' type="text" id="name" name="name" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <input class='form-control' type="text" id="email" name="email" readonly>
+                            </div>
+                        </div>
+        
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <input class='form-control' type="text" id="phone" name="phone" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <input class='form-control' type="text" id="country" name="country" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <textarea name="message" id="message" name="message" cols="30" rows="10" class="form-control" readonly></textarea>
+                            </div>
+                        </div>
+        
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info btn-ok">Mark as Unread</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+    <!-- confirm deletion modal -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Message Deletion</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p><span style="color: red;">WARNING!</span>You are about to delete a message record of subject: <b><i class="title"></i></b>.</p>  
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-danger btn-ok">Delete Record</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+    {% else %}
+    <p> No roles data available. </p>
+    {% endif %}
+</div>
+
+<hr>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/datatables.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/dataTables.responsive.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/responsive.bootstrap4.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/Flash-Toast-Notification/flash.min.js') }}"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        $('#messagesTable').DataTable({
+        	responsive: true
+            // "columnDefs": [
+            //     {
+            //         "targets": [0],
+            //         "visible": false
+            //     }
+            // ]
+        });
+    });
+</script>
+<script type="text/javascript">
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var message = JSON.parse($(this).data('message'));
+        // console.log(client);
+
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 400)
+        
+        $("#spinner").prop('hidden', false);
+        
+        fetch('{{ url_for("admin.delete_message") }}', {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'POST',
+            body: JSON.stringify(message )
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error("Request could not be successfully processed.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            $("#spinner").prop('hidden', true);
+            flash(data,{
+                "bgColor": "#51B155",
+            });
+            setTimeout(function() {
+                location.reload();
+            }, 1000)
+        })
+        .catch(error => {
+            $("#spinner").prop('hidden', true);
+            flash(error,{
+                "bgColor": "#E62229",
+            });
+        })
+
+        
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.messageSubject);
+        var record = JSON.stringify({
+                'message_id': data.messageId
+            })
+        $('.btn-ok', this).data('message', record)
+    });
+</script>
+<script type="text/javascript">
+$.fn.jsonToForm = function(_options, _callbacks){
+        var formInstance = this;
+
+        var options = {
+            data: _options || null,
+            callbacks: _callbacks || []
+        };
+
+        if (options.data != null) {
+            $.each(options.data, function(k,v){
+                if (options.callbacks[k] != null){
+                    options.callbacks[k](v);
+                } else {
+                    $('[name="' + k +'"]', formInstance).val(v);
+                }
+            });
+        }
+    }
+
+    $('#read-message').on('hidden.bs.modal', function(e) {
+        location.reload();
+    });
+
+    $('#read-message').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var msgId = JSON.parse($(this).data('msgId'));
+        // console.log(client);
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 400);
+
+        $("#spinner").prop('hidden', false);
+        
+        fetch('{{ url_for("admin.mark_message_as_unread") }}', {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'POST',
+            body: JSON.stringify(msgId )
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error("Request could not be successfully processed due to an error.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            $("#spinner").prop('hidden', true);
+            flash(data['message'],{
+                "bgColor": "#51B155",
+            });
+        })
+        .catch(error => {
+            $("#spinner").prop('hidden', true);
+            flash(error,{
+                "bgColor": "#E62229",
+            });
+        })
+        $('.btn-ok', this).data('msgId', msgId)
+    });
+
+    $('#read-message').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.messageSubject);
+        $('.msgId', this).text(data.messageId);
+        // let message_id = data.messageId;
+        // console.log("message_id = ", message_id);
+        var record = JSON.stringify({
+                'message_id': data.messageId
+        });
+        
+        $("#spinner").prop('hidden', false);
+
+        fetch('{{ url_for("admin.view_messages") }}', {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'POST',
+            body: JSON.stringify({'message_id': data.messageId })
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error("Request could not be successfully processed due to an error.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            $("#spinner").prop('hidden', true);
+            if (data['data'].length){
+                let messageData = data['data'][0];
+                // console.log(messageData);
+                // console.log(typeof(messageData));
+                $("#messageForm").jsonToForm(messageData);
+
+                flash(data['message'],{
+                    "bgColor": "#51B155",
+                });
+            } else {
+                flash("Returned empty",{
+                    "bgColor": "#E62229",
+                });
+            }
+        })
+        .catch(error => {
+            $("#spinner").prop('hidden', true);
+            flash(error,{
+                "bgColor": "#E62229",
+            });
+        })
+        $('.btn-ok', this).data('msgId', record)
+    });
+</script>
+
+{% endblock %}

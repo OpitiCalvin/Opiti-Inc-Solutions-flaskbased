@@ -1,0 +1,150 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<link href="{{ url_for('static', filename='css/login_form.css') }}" rel="stylesheet">
+<style type="text/css">
+	.asteriskField {
+		color: red;
+    }
+    .hiddenField {
+      display: None;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+	<a class="breadcrumb-item" href="{{ url_for('admin.admin_index') }}">Home</a>
+	<a class="breadcrumb-item" href="{{ url_for('admin.view_users') }}">Users</a>
+	<span class="breadcrumb-item active" href="{{ url_for('admin.create_user') }}">Add User</span>
+</div>
+
+<div class="container-fluid" style="margin-top: 5px;">
+	<h1 class="text-center">Register New User</h1>
+</div>
+<hr>
+{% if current_user.role_id == 1 %}
+<div class="container-fluid">
+	<div class="login-form">
+		<form action="{{ url_for('admin.create_user') }}" method="post" name="user_register">
+			{{ form.csrf_token }}
+			<br>
+			<div class="form-group">
+				<label><span style="color: red;">*</span>User Email</label>
+				{{ form.email(class='form-control', placeholder='Enter user email address') }}
+				<div id="email_checker" class="form-group hiddenField"></div>
+			</div>
+
+			<div class="form-group">
+				<label><span style="color: red;">*</span> Username</label>
+				{{ form.username(class='form-control', placeholder='Enter unique username') }}
+			</div>
+
+			<div class="form-group">
+				<label><span style="color: red;">*</span>Password</label>
+				{{ form.password(class='form-control', placeholder='Enter password') }}
+			</div>
+
+			<div class="form-group">
+				<label><span style="color: red;">*</span>Confirm Password</label>
+				{{ form.confirm(class='form-control', placeholder='Comfirm password') }}
+				<div id="pass_checker" class="form-group hiddenField"></div>
+			</div>
+
+			<div class="form-group">
+				<input id="submit" type="submit" value="Submit" disabled class="btn btn-success btn-lg btn-block">
+			</div>
+
+			<div class="clearfix">
+				
+			</div>
+			<br>
+
+		</form>
+	</div>
+</div>
+{% else %}
+<div>
+	<h1 class="text-center"> SORRY!</h1>
+	<p class="text-center">You do not have rights to create new users.</p>
+</div>
+{% endif %}
+<hr>
+<div class="text-center">
+	<a href="{{ url_for('admin.view_users') }}">
+		<button type="button" class="btn btn-outline-info btn-sm m-1"><i class="fas fa-history"></i> Back to Users</button>
+	</a>
+</div>
+<br>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  $("#email").on('change', function(){
+    var val = $("#email").val();
+    // console.log(val)
+    
+    if (val) {
+      $.post({
+        url: '{{ url_for("admin.checkEmailUniqueness")}}',
+        data: JSON.stringify({'email': val}),
+        contentType: 'application/json',
+        success: function(msg){
+          // $('#email_checker').show();
+          $('#email_checker').removeClass('hiddenField');
+          $("#email_checker").html(msg);
+          var clr = $('#email_checker span').css('color');
+          // console.log(clr);
+          if (clr) {
+            if (clr == 'rgb(255, 0, 0)') {
+              // console.log(clr);
+              $("#submit").prop('disabled', true);
+            }
+            else {
+              // console.log(clr);
+              $("#submit").prop('disabled', false);
+            }
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+                $('#email_checker').show();
+                $("#email_checker").html(textStatus + " " + errorThrown);
+              }
+      });
+    }
+    else {
+      $('#email_checker').addClass('hiddenField');
+      $("#email_checker").empty();
+    }
+  });
+
+  function checkPasswordMatch(){
+    var pass1 = $("#password").val();
+    var pass2 = $("#confirm").val();
+
+    // if (pass1.trim() != '' && pass2.trim() != ''){
+    if (pass1 && pass2){
+      if (pass2 != pass1){
+        $("#pass_checker").removeClass('hiddenField');
+        $("#pass_checker").html('Passwords do not match!').css("color","red");
+        $("#submit").prop('disabled', true)
+      }
+      else {
+        $("#pass_checker").removeClass('hiddenField');
+        $("#pass_checker").html('Passwords match.').css("color","green");
+        $("#submit").prop('disabled', false)
+      }
+    }
+    else {
+      $("#pass_checker").addClass('hiddenField');
+      $("#pass_checker").empty();
+      $("#submit").prop('disabled', true)
+    }
+  } 
+  $(function(){
+    $("#password").on('input', checkPasswordMatch);
+    $("#confirm").on('input', checkPasswordMatch);
+  });
+</script>
+
+{% endblock %}

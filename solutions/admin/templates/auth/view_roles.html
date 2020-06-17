@@ -1,0 +1,199 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/css/responsive.bootstrap4.min.css') }}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="breadcrumb">
+	<a class="breadcrumb-item" href="{{ url_for('admin.admin_index') }}">Home</a>
+	<span class="breadcrumb-item active" href="{{ url_for('admin.view_roles') }}">Roles</span>
+</div>
+
+
+<!-- <div class="container-fluid"> -->
+<div>
+    <h1 class="text-center">User Roles</h1>
+</div>
+<!-- </div> -->
+
+<hr>
+<!-- <div class="container-fluid"> -->
+<div>
+    {% if roles %}
+    <table id="rolesTable" class="table table-striped" style="width:100%">
+    <!-- <table id="placesTable" class="display responsive nowrap" style="width:100%"> -->
+        <thead>
+            <tr>
+                <th class="th-sm text-center">ID</th>
+                <th class="th-sm text-center">Role Name</th>
+                <th class="th-sm text-center">Description</th>
+                {% if current_user.role_id ==1 %}
+                <th class="th-sm text-center">Created</th>
+                <th class="th-sm text-center">Updated</th>
+                <th class="th-sm text-center">Tools</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td class="text-center align-middle">{{ role.role_id }}</td>
+                <td class="text-center align-middle">{{ role.name }}</a>
+                </td>
+                <td class="text-center align-middle">{{ role.description }}</td>
+                {% if current_user.role_id ==1 %}
+                <td class="text-center align-middle">{{ role.created }}</td>
+                <td class="text-center align-middle">{{ role.updated }}</td>
+                <td class="text-center align-middle">                    
+                    <div class="btn-group-vertical">
+                        <a href="{{ url_for('admin.view_a_role', role_id = role.role_id) }}" class="btn btn-outline-success btn-sm" role="button" 
+                            style="font-size: 10px; min-width:110px; margin:2px;">
+                            <i class="fa fa-home"></i> View Record
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm" data-role-id="{{ role.role_id }}"
+                            data-role-name="{{ role.name }}" data-toggle="modal" data-target="#confirm-delete"
+                            style="font-size: 10px; min-width:110px; margin:2px;"><i class="fas fa-trash"></i> Delete Record
+                        </button>
+                    </div>
+                    
+                </td>
+                {% endif %}                    
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="th-sm text-center">ID</th>
+                <th class="th-sm text-center">Role Name</th>
+                <th class="th-sm text-center">Description</th>
+                {% if current_user.role_id ==1 %}
+                <th class="th-sm text-center">Created</th>
+                <th class="th-sm text-center">Updated</th>
+                <th class="th-sm text-center">Tools</th>
+                {% endif %}
+            </tr>
+        </tfoot>
+    </table>
+    <!-- confirm deletion modal -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p><span style="color: red;">WARNING! </span>You are about to delete a role record for: <b><i class="title"></i></b>.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+    <!-- confirm undeletion modal -->
+    <!-- <div class="modal fade" id="confirm-undelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Reversing Record Deletion</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p><span style="color: red;">WARNING!</span>You are about to restore a data record for: <b><i class="title"></i></b>.</p>  
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Restore Record</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- modal end -->
+    {% else %}
+    <p> No roles data available. </p>
+    {% endif %}
+</div>
+
+<hr>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/datatables.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/dataTables.responsive.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/responsive.bootstrap4.min.js') }}"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+        $('#rolesTable').DataTable({
+        	responsive: true
+            // "columnDefs": [
+            //     {
+            //         "targets": [0],
+            //         "visible": false
+            //     }
+            // ]
+        });
+    });
+</script>
+<script type="text/javascript">
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var role = JSON.parse($(this).data('role'));
+        // console.log(client);
+
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+        
+        $.post({
+            url: "{{ url_for('admin.delete_role') }}",
+            data: JSON.stringify(role),
+            contentType: 'application/json',
+            success: function(data, status){
+                sessionStorage.setItem('msg', data);
+                location.reload();
+            },
+            // error: function() {
+            //     alert("An error occurred. Deletion failed.");
+            // }
+        });
+
+        
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.roleName);
+        var record = JSON.stringify({
+                'role_id': data.roleId
+            })
+        $('.btn-ok', this).data('role', record)
+    });
+
+    
+    $(function () {
+        if (sessionStorage.getItem('msg') != null){
+            data = sessionStorage.getItem('msg');
+            $("#flashMessage2").append("<p>"+ data + "</p>");
+            $("#flashMessage2").removeClass("hiddenField");
+            setTimeout(function(){
+                $('#flashMessage2').fadeOut('fast');
+            }, 30000);
+            sessionStorage.removeItem('msg');
+        }
+        else {
+            $("#flashMessage2").addClass("hiddenField");
+        }
+    });
+</script>
+
+{% endblock %}

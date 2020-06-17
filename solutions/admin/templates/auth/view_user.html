@@ -1,0 +1,165 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<link href="{{ url_for('static', filename='css/login_form.css') }}" rel="stylesheet">
+<style type="text/css">
+	.asteriskField {
+		color: red;
+    }
+	.hiddenField {
+		display: None;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+	<a class="breadcrumb-item" href="{{ url_for('admin.admin_index') }}">Home</a>
+	<a class="breadcrumb-item" href="{{ url_for('admin.view_users') }}">Users</a>
+	<span class="breadcrumb-item active" href="{{ url_for('admin.view_a_user', user_id=user.user_id) }}">{{ user['user_id'] }}</span>
+</div>
+
+<div class="container-fluid">
+	<h1 class="text-center">View User Record</h1>
+	<div class="row">
+		{% if user %}
+		<div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+			<h2>User Data</h2>
+			<br>
+			<form class="form-horizontal" id="userForm" action="" method="post">
+				<div class="form-group">
+					<label class="control-label col-sm-4" for="user_id">User ID<span class="asteriskField">*</span></label>
+					<div class="col-sm-8">
+						<input class='form-control' type="text" id="user_id" name="user_id" value="{{ user.user_id }}" readonly required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-sm-4" for="username">Username</label>
+					<div class="col-sm-8">
+						<input class='form-control' type="text" id="username" name="username" value="{{ user.username }}" readonly>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-sm-4" for="email"><span style="color: red;">*</span> User Email <span class="asteriskField">*</span></label>
+					<div class="col-sm-8">
+						<input class='form-control' type="text" id="email" name="email" value="{{ user.email }}" readonly>
+					</div>
+				</div>
+
+				<div class="form-group ">
+					<label class="control-label col-sm-4" for="role_name">
+						Role Name <span class="asteriskField"> * </span>
+					</label>
+					<div class="col-sm-8">
+						<select class="form-control" id="role_name" name="role_name" required disabled>
+						</select>
+					</div>
+				</div>        
+
+				{% if user.role_id == 1 or current_user.role_id == user.role_id %}
+				<div class="text-center">
+					<button class="btn btn-outline-warning btn-sm m-1" id="editButton" name="submit"><i class="fas fa-pen"></i> Edit Record </button>
+					<button class="btn btn-outline-secondary btn-sm m-1 hiddenField" id="cancelEditButton"><i class="fas fa-ban"></i> Cancel Edit </button>
+					<button class="btn btn-outline-primary btn-sm m-1" id="postUpdated" type="submit" disabled="true"><i class="fas fa-share-square"></i> Update Record</button>
+				</div>
+				{% endif %}
+
+			</form>
+		</div>
+
+		<!-- End of left bit -->
+		<div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+			<div>
+				<h2 class="text-center">Metadata</h2>
+				<br>
+				<div class="panel-group">
+					<div class="panel panel-primary">
+						<div class="panel-heading">User Record Metadata</div>
+						<br/>
+						<div class="panel-body"><strong>Created By</strong>: <span style="display:inline-block;text-indent: 200px;">{{ user['created_by'] }}</span></div>
+						<hr>
+						<div class="panel-body"><strong>Date Created</strong>: <span style="display:inline-block;text-indent: 188px;">{{ user['created'] }}</span></div>
+						<hr>
+						<div class="panel-body"><strong>Updated By</strong>: <span style="display:inline-block;text-indent: 200px;">{{ user['updated_by'] }}</span></div>
+						<hr>
+						<div class="panel-body"><strong>Date Updated</strong>: <span style="display:inline-block;text-indent: 188px;">{{ user['updated'] }}</span></div>
+						<hr>
+						{% if current_user.role_id <= 2 and user.deleted %}
+						<div class="panel-body"><strong>Date Deleted</strong>: <span style="display:inline-block;text-indent: 188px;">{{ user['deleted_date'] }}</span></div>
+						<hr>
+						<div class="panel-body"><strong>Deleted By</strong>: <span style="display:inline-block;text-indent: 200px;">{{ user['deleted_by'] }}</span></div>
+						<hr>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>		
+</div>
+
+<hr>
+<div class="text-center">
+	<a href="{{ url_for('admin.view_users') }}">
+		<button type="button" class="btn btn-outline-info btn-sm m-1" ><i class="fas fa-history"></i> Back to Users</button>
+	</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	var frm = document.getElementById('userForm');
+	$('#editButton').on('click', function(event){
+		event.preventDefault();
+		for(var i=2; i < frm.length; i++) {
+				frm.elements[i].readOnly = false;
+				$("#editButton").prop('disabled', true);
+		        $("#editButton").addClass('hiddenField');
+		        $("#cancelEditButton").removeClass('hiddenField');
+		} 
+		frm.elements[2].focus();
+		$("#postUpdated").prop('disabled', false);
+		$("#role_name").prop('disabled', false);
+	});
+
+	$("#cancelEditButton").on('click', function(e){
+		e.preventDefault()
+		for(var i=1; i < frm.length; i++) {
+			frm.elements[i].readOnly = true;
+			$("#editButton").prop('disabled', false);
+			$("#editButton").removeClass('hiddenField');
+			$("#cancelEditButton").addClass('hiddenField');
+		}
+		$("#postUpdated").prop('disabled', true);
+		$("#role_name").prop('disabled', true);
+	});
+</script>
+
+<script type="text/javascript">
+  $(function(){
+    var role_selected = "{{ user.role_id }}";
+    // console.log(role_selected);
+    var roles = "{{ roles }}";
+    roles = roles.replace(/&#39;/g, '"');
+    roles = JSON.parse(roles);
+    // console.log(roles);
+
+    var keys = Object.keys(roles);
+    // console.log(keys);
+    var i;
+
+    for (i=0; i< keys.length; i++){
+      // if (role_selected.includes(roles[keys[i]])){
+      if (role_selected == keys[i]){
+      	// console.log(roles[keys[i]]);
+        $("#role_name").append('<option value="' + roles[keys[i]] + '" selected >' + roles[keys[i]] + '</option>');
+      } else {
+      	$("#role_name").append('<option value="' + roles[keys[i]] + '">' + roles[keys[i]] + '</option>');
+      } 
+    }
+  });
+</script>
+
+{% endblock %}

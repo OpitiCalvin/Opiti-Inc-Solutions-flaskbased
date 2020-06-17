@@ -1,0 +1,27 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<style type="text/css">
+	.hiddenField {
+		display: none;
+	}
+	.welcome {
+		font-weight: bold;
+		text-align: center;
+	    position: absolute;
+	    top: 50%;
+	    right: 50%;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="flashMessage2" class="alert alert-info alert-dismissible hiddenField"></div>
+<div id="">
+	<h1 class="welcome">👋 Hello &amp; Welcome</h1>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

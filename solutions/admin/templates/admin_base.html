@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="Sample spatial solutions developed by Opiti Inc.">
+		<meta name="author" content="Calvin Opiti">
+		
+
+		<title>OPITI INC: Administration</title>
+
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+		<link rel="icon" type="image/png" sizes="194x194" href="{{ url_for('static', filename='favicons/favicon-194x194.png') }}">
+		<link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='favicons/android-chrome-192x192.png') }}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+		<link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}">
+		<link rel="mask-icon" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}" color="#5bbad6">
+		<meta name="msapplication-TileColor" content="#00aba9">
+		<meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicons/mstile-144x144.png') }}">
+		<meta name="theme-color" content="#ffffff">
+
+		<!-- Bootstrap core CSS -->
+		<link href="{{ url_for('static', filename='js_libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+		<link href="{{ url_for('static', filename='js_libs/fontawesome-free/css/all.css') }}" rel="stylesheet"><!--load all styles -->
+
+		<!-- Custom styles for this template -->
+		<link href="{{ url_for('static', filename='css/sticky-footer-navbar.css') }}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/spinner.css') }}" rel="stylesheet">
+
+		<style type="text/css">
+			/*.container-fluid {
+				padding-left: 32px !important;
+				padding-right: 32px !important;
+			}*/
+			/*.navbar-header .navbar-icon-container {
+			margin-right: 15px;
+		}*/
+		</style>
+
+		{% block styles %}{% endblock %}
+	</head>
+
+	<body>
+
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+				<div class="container">
+					<a class="navbar-brand" href="https://opiticonsulting.com" target="_blank">
+						<!-- Logo Image -->
+						<img src="" width="45" alt="" class="d-inline-block align-middle mr-2">
+						<!-- Logo Text -->
+						<span class="text-uppercase font-weight-bold">OPITI INC</span>
+					</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarCollapse">
+						<ul class="navbar-nav ml-auto">
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url_for('admin.admin_index') }}">Admin Home<span class="sr-only">(current)</span></a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url_for('site.index') }}" target="_blank">Solutions</a>
+							</li>
+							{% if current_user.is_authenticated %}
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url_for('admin.view_messages') }}">Messages</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="" role="buton" id="dropdownMenuAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuAdmin">
+									<a class="dropdown-item" href="{{ url_for('admin.view_roles') }}">Roles</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="{{ url_for('admin.view_users') }}">Users</a>
+								</div>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="buton" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ current_user.username }}</a>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+									<a class="dropdown-item" href="{{ url_for('admin.user_logout') }}">Logout</a>
+								</div>
+							</li>
+							{% else %}
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url_for('admin.user_login') }}">Login</a>
+							</li>
+							{% endif %}
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		<!-- Begin page content -->
+		<!-- <main role="main" class="container-fluid"> -->
+		
+		<!-- flash messages -->
+		{% for info_message in get_flashed_messages() %}
+			<div id="flashMessage" class="alert alert-info alert-dismissible">{{ info_message }}</div>
+		{% endfor %}
+
+		<div class="container-fluid">
+			{% block content %}
+			{% endblock %}
+
+		<!-- </main> -->
+		</div>
+
+		<footer class="footer">
+			<div class="container text-center">
+				<span class="text-muted">Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> | &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script></span>
+			</div>
+		</footer>
+
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="{{ url_for('static', filename='js_libs/jquery/jquery.min.js') }}"></script>
+		<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+		<script src="{{ url_for('static', filename='js_libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+		{% block scripts %}{% endblock %}
+		<script type="text/javascript">
+		setTimeout(function() {
+				$('#flashMessage').fadeOut('fast');
+		}, 10000); // <-- time in milliseconds
+	</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-106069296-1');
+	</script>
+	</body>
+</html>

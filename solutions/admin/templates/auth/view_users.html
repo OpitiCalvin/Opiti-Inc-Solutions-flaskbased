@@ -1,0 +1,193 @@
+{% extends "admin_base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/css/responsive.bootstrap4.min.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a class="breadcrumb-item" href="{{ url_for('admin.admin_index') }}">Home</a>
+    <span class="breadcrumb-item active" href="{{ url_for('admin.view_users') }}">Users</span>
+</div>
+
+<div class="container-fluid" style="margin-top: 5px;">
+    <h1 class="text-center">Full Users List</h1>
+</div>
+<hr>
+
+{% if current_user.role_id == 1 %}
+<div class="container-fluid">
+    <a type="button" class="btn btn-sm btn-success"  href="{{ url_for('admin.create_user') }}">Add New User</a>
+</div>
+<hr>
+{% endif %}
+
+<div class="container-fluid">
+    {% if users %}
+    <table id="usersTable" class="table table-striped" style="width:100%">
+    <!-- <table id="placesTable" class="display responsive nowrap" style="width:100%"> -->
+        <thead>
+            <tr>
+                <th class="th-sm text-center">User ID</th>
+                <th class="th-sm text-center">Username</th>
+                <th class="th-sm text-center">Email</th>
+                <th class="th-sm text-center">Last Logged In</th>
+                <th class="th-sm text-center">Role</th>
+                <th class="th-sm text-center">Tools</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td class="text-center align-middle">{{ user.user_id }}</td>
+                <td class="text-center align-middle">{{ user.username }}</a>
+                </td>
+                <td class="text-center align-middle">{{ user.email }}</td>
+                <td class="text-center align-middle">{{ user.last_logged_in }}</td>
+                <td class="text-center align-middle">{{ user.role.name }}</td>
+                <td class="text-center align-middle">
+                    <div class="btn-group-vertical">
+                        <a href="{{ url_for('admin.view_a_user', user_id = user.user_id )}}" class="btn btn-outline-success btn-sm" role="button" style="font-size: 10px; min-width:110px; margin:2px;"><i
+                                    class="fa fa-home"></i> View Record</a>
+                        {% if user.role_id != current_user.role_id %}
+                        <button class="btn btn-outline-danger btn-sm" data-user-email="{{ user.email }}"
+                            data-username="{{ user.username }}" data-toggle="modal" data-target="#confirm-delete"
+                            style="font-size: 10px; min-width:110px; margin:2px;"><i class="fas fa-trash"></i> Delete Record</button>
+                        {% endif %}
+                    </div>
+                </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="th-sm text-center">User ID</th>
+                <th class="th-sm text-center">Username</th>
+                <th class="th-sm text-center">Email</th>
+                <th class="th-sm text-center">Last Logged In</th>
+                <th class="th-sm text-center">Role</th>
+                <th class="th-sm text-center">Tools</th>
+            </tr>
+        </tfoot>
+    </table>
+    <!-- confirm deletion modal -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p><span style="color: red;">WARNING!</span>You are about to delete a data record for: <b><i class="title"></i></b>.</p>  
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+
+    <!-- confirm undeletion modal -->
+    <div class="modal fade" id="confirm-undelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Reversing Record Deletion</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+                    <p><span style="color: red;">WARNING!</span>You are about to restore a data record for: <b><i class="title"></i></b>.</p>  
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Restore Record</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+    {% else %}
+    <p> No user data available. </p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/datatables.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/dataTables.responsive.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js_libs/DataTables/Responsive-2.2.3/js/responsive.bootstrap4.min.js') }}"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+        $('#usersTable').DataTable({
+        	responsive: true
+            // "columnDefs": [
+            //     {
+            //         "targets": [0],
+            //         "visible": false
+            //     }
+            // ]
+        });
+    });
+</script>
+<script type="text/javascript">
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var user = JSON.parse($(this).data('user'));
+        // console.log(client);
+
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+        
+        $.post({
+            url: "{{ url_for('admin.delete_user') }}",
+            data: JSON.stringify(user),
+            contentType: 'application/json',
+            success: function(data, status){
+                sessionStorage.setItem('msg', data);
+                location.reload();
+            },
+            // error: function() {
+            //     alert("An error occurred. Deletion failed.");
+            // }
+        });
+
+        
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.username);
+        var record = JSON.stringify({
+                'email': data.userEmail
+            })
+        $('.btn-ok', this).data('user', record)
+    });
+
+    
+    $(function () {
+        if (sessionStorage.getItem('msg') != null){
+            data = sessionStorage.getItem('msg');
+            $("#flashMessage2").append("<p>"+ data + "</p>");
+            $("#flashMessage2").removeClass("hiddenField");
+            setTimeout(function(){
+                $('#flashMessage2').fadeOut('fast');
+            }, 30000);
+            sessionStorage.removeItem('msg');
+        }
+        else {
+            $("#flashMessage2").addClass("hiddenField");
+        }
+    });
+</script>
+
+
+{% endblock %}
