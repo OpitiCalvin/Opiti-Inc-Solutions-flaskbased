@@ -64,3 +64,5 @@ def register_blueprints(app):
 	from mapGIS.views import mapper as mapper_bp
 	app.register_blueprint(mapper_bp, url_prefix="/mapGIS")
 
+	from accidents.views import county as county_bp
+	app.register_blueprint(county_bp, url_prefix="/accidents")

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+    <title>County Accident Data</title>
+    
+    <link href="{{ url_for('static', filename='js_libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='accidents/css/theme.min.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='accidents/css/accidents.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='js_libs/openlayers-v6.3.1/ol.css') }}" rel="stylesheet"/>
+</head>
+<body>
+	<nav role="navigation" class="navbar navbar-default">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">County Accident Data</a>
+        </div>
+    </nav>
+	<div class="container-fluid">
+	  	<div class="row">
+			<div class="col-md-2 sidebar">  
+				<div id="comments">
+				Click on a county to load the accident data.
+				</div>
+			</div>
+			<div class="col-md-9 main-content">
+      			<div id="map" class="map" style="height: 540px; width: 100%;"></div>
+			</div>
+		</div>
+	</div>
+	<footer class="footer">
+		<div>
+        	<!-- <p>
+				Contains OS data © Crown copyright and database right (2016)
+			</p> -->
+			<p class="m-0 text-center text-white">Developed By <a href="https://www.opiticonsulting.com" target="_blank">Opiti Consulting</a> | &copy; <script type="text/javascript">document.write(new Date().getFullYear());</script> </p>
+		</div>
+    </footer>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/jquery/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/openlayers-v6.3.1/ol.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='accidents/js/accidents.js') }}"></script>
+	
+</body>
+</html>
