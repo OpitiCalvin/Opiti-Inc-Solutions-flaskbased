@@ -7,19 +7,22 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-flask-migrate = "*"
 flask-script = "*"
+requests = "*"
 flask-sqlalchemy = "*"
+flask-migrate = "*"
 flask-marshmallow = "*"
+psycopg2-binary = "*"
 flask-restx = "*"
 marshmallow-sqlalchemy = "*"
-requests = "*"
-psycopg2-binary = "*"
 python-dotenv = "*"
 flask-cors = "*"
-flask-wtf = "*"
-flask-login = "*"
 flask-jwt-extended = "*"
+flask-login = "*"
+flask-wtf = "*"
+geoalchemy2 = "*"
+geojson = "*"
+shapely = "*"
 
 [requires]
 python_version = "3.7"
