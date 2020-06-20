@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+flask = "*"
+flask-script = "*"
+requests = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-marshmallow = "*"
+psycopg2-binary = "*"
+flask-restx = "*"
+marshmallow-sqlalchemy = "*"
+python-dotenv = "*"
+flask-cors = "*"
+flask-jwt-extended = "*"
+flask-login = "*"
+flask-wtf = "*"
+geoalchemy2 = "*"
+geojson = "*"
+shapely = "*"
+
+[requires]
+python_version = "3.7"
