@@ -1,30 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A webGIS application showing accident statistics and charts for England.">
+	<meta name="author" content="Calvin Opiti, https://opiticonsulting.com">
     <title>County Accident Data</title>
     
-    <link href="{{ url_for('static', filename='js_libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"/>
+	<link href="{{ url_for('static', filename='js_libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"/>
+	<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.css') }}" />
     <link href="{{ url_for('static', filename='accidents/css/theme.min.css') }}" rel="stylesheet"/>
     <link href="{{ url_for('static', filename='accidents/css/accidents.css') }}" rel="stylesheet"/>
-    <link href="{{ url_for('static', filename='js_libs/openlayers-v6.3.1/ol.css') }}" rel="stylesheet"/>
+	<link href="{{ url_for('static', filename='js_libs/openlayers-v6.3.1/ol.css') }}" rel="stylesheet"/>
+	<link href="{{ url_for('static', filename='css/spinner.css') }}" rel="stylesheet"/>
 </head>
 <body>
 	<nav role="navigation" class="navbar navbar-default">
         <div class="navbar-header">
-            <a href="#" class="navbar-brand">County Accident Data</a>
+			<a href="{{ url_for('county.accidentsIndex') }}" class="navbar-brand">County Accident Data</a>
+			
         </div>
-    </nav>
+	</nav>
+	
+	<!-- Modal -->
+	<div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+		  	<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="aboutModalLabel">About County Accidents Application</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>This application displays <strong>road accident statistics (year 2014)</strong> for counties in England, overlaid over a map with accompanying graph data. On county selection, a request is made to the server and postgis database, which undertakes a spatial <strong>Intersect</strong>query. 
+						The response geojson data with reported accident locations is plotted while the aggregate statistical data extracted from the response is used to create the chart.</p>
+					<p>This application is developed with or utilises the following tools:</p>
+					<ul>
+						<li>Python: Flask Framework</li>
+						<li>PostgreSQL Database with PostGIS Extension: For spatial capabilities</li>
+						<li>HTML 5: HTML and JavaScript</li>
+						<li>Chart JS: for the charts</li>
+						<li>Fetch API: for accident data query for a selected county</li>
+						<li>OpenLayer: Version 6.3.1</li>
+					</ul>
+					<p>This is a conversion of the original application, which was developed using GeoDjango and Openlayers by <a href="https://github.com/anushamc/foss4guk-django-openlayers/" target="_blank">Anusha Chickermane</a></p>
+					<p style="text-align: center;"><span style="color: blue;">Enjoy!</span></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="container-fluid">
-	  	<div class="row">
-			<div class="col-md-2 sidebar">  
+	  	<div class="row"  style="height: 80vh; width: 100%;">
+			<div class="col-md-4 sidebar">  
 				<div id="comments">
 				Click on a county to load the accident data.
 				</div>
+				<canvas id="myChart" width="400" height="400"></canvas>
 			</div>
-			<div class="col-md-9 main-content">
-      			<div id="map" class="map" style="height: 80vh; width: 100%;"></div>
+			<div class="col-md-8 main-content">
+      			<div id="map" class="map" style="height: 95%; width: 100%;"></div>
 			</div>
+			<div hidden id="spinner"></div>
 		</div>
 	</div>
 	<footer class="footer">
@@ -38,7 +78,60 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/jquery/jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/openlayers-v6.3.1/ol.js') }}"></script>
+	<script>
+		$(function(){
+			$("#aboutModal").modal('show');
+			// $("#basicExampleModal").modal('show');
+		});
+
+	</script>
 	<script type="text/javascript" src="{{ url_for('static', filename='accidents/js/accidents.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/Flash-Toast-Notification/flash.min.js')}}"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 	
+	<!-- <script>
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var data = {
+			labels: ["Level 1", "Level 3", "Level 3"],
+			datasets: [
+				{
+					label: "No of Accidents",
+					backgroundColor: "rgba(54, 162, 235, 0.2)",
+					borderColor: "rgba(54, 162, 235, 1)",
+					borderWidth: 1,
+					data: [29,331,1384]
+				},
+				{
+					label: "No of Casulties",
+					backgroundColor: "rgba(255, 99, 132, 0.2)",
+					borderColor: "rgba(255, 99, 132, 1)",
+					borderWidth: 1,
+					data: [47,461,1809]
+				},
+				{
+					label: "No of Vehicles",
+					backgroundColor: "rgba(255, 206, 86, 0.2)",
+					borderColor: "rgba(255, 206, 86, 1)",
+					borderWidth: 1,
+					data: [43,599,2616]
+				}
+			]
+		};
+		
+		var myChart = new Chart(ctx, {
+			type: 'bar',
+			data: data,
+			options: {
+				barValueSpacing: 20,
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
+		});
+	</script> -->
 </body>
 </html>

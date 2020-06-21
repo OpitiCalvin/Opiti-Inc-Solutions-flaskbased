@@ -87,3 +87,39 @@ def retrieve_accidents_data_as_geojson(fields, county_name, county_geom, acciden
 
     except Exception as err:
         raise err
+
+def severity_stats(data):
+    r"""Extracts accident data for plotting based on accident severity."""
+
+    features = data['features']
+    # print(f"Features Count: {len(features)}")
+
+    severity_levels = []
+    severity_counts={}
+    for feature in features:
+        severity_levels.append(feature['properties']["accident_severity"])
+        if feature['properties']["accident_severity"] in severity_counts.keys():
+            if 'accident_count' in severity_counts[feature['properties']["accident_severity"]].keys():
+                count = severity_counts[feature['properties']["accident_severity"]]['accident_count']
+                severity_counts[feature['properties']["accident_severity"]]['accident_count'] = int(count) + 1
+            else:
+                severity_counts[feature['properties']["accident_severity"]]['accident_count'] = 1
+
+            if 'casualty_total' in severity_counts[feature['properties']["accident_severity"]].keys():
+                casualties = severity_counts[feature['properties']["accident_severity"]]['casualty_total']
+                severity_counts[feature['properties']["accident_severity"]]['casualty_total'] = int(casualties) + int(feature['properties']["number_of_casualties"])
+            else:
+                severity_counts[feature['properties']["accident_severity"]]['casualty_total'] = int(feature['properties']["number_of_casualties"])
+
+            if 'vehicle_total' in severity_counts[feature['properties']["accident_severity"]].keys():
+                vehicles = severity_counts[feature['properties']["accident_severity"]]['vehicle_total']
+                severity_counts[feature['properties']["accident_severity"]]['vehicle_total'] = int(vehicles) + int(feature['properties']["number_of_vehicles"])
+            else:
+                severity_counts[feature['properties']["accident_severity"]]['vehicle_total'] = int(feature['properties']["number_of_vehicles"])
+        else:
+            severity_counts[feature['properties']["accident_severity"]] = {"accident_count": 1,	"casualty_total": int(feature['properties']["number_of_casualties"]) ,"vehicle_total": int(feature['properties']["number_of_vehicles"])
+            }
+
+    # print(f"Severity levels length = {len(severity_levels)}")
+    # print(severity_counts)
+    return severity_counts

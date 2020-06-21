@@ -62,17 +62,17 @@
       </div>
     </div>
 
-    <!-- <div class="col-md-4 col-sm-6 my-4">
+    <div class="col-md-4 col-sm-6 my-4">
       <div class="card">
-        <img class="card-img-top" src="{{ url_for('static', filename='images/IFIS_debt.jpg') }}" alt="" style="width:100%;height:200px;">
+        <img class="card-img-top" src="{{ url_for('static', filename='images/pie-chart.jpg') }}" alt="" style="width:100%;height:200px;">
         <div class="card-body">
-          <h4 class="card-title">Debt Management Solution</h4>
-          <p class="card-text">A web-GIS and online web mapping solution for visualization of municipality debts.</p>
+          <h4 class="card-title">County Statistics: Accidents</h4>
+          <p class="card-text">An online statistical map application for county accident statistics in England.</p>
         </div>
         <div class="card-footer">
-            <a href="debtorSystem/index.html" target="_blank" class="btn btn-primary">Find Out More!</a>
+            <a href="{{ url_for('county.accidentsIndex') }}" target="_blank" class="btn btn-primary">Find Out More!</a>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 {% endblock %}
