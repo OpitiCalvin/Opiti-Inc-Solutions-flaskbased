@@ -53,7 +53,7 @@ var drawControl = new L.Control.Draw({
       metric: true,
       repeatMode: false,
     },
-    marker: false,
+    marker: true,
     polyline: {
       shapeOptions: {
         color: 'red'
