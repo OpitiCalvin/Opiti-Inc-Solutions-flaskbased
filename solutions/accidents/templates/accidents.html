@@ -3,9 +3,22 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="A webGIS application showing accident statistics and charts for England.">
+	<meta name="description" content="A webGIS application online visualization of accident statistics and charts for England.">
 	<meta name="author" content="Calvin Opiti, https://opiticonsulting.com">
-    <title>County Accident Data</title>
+	<meta name="keywords" content="Opiti Inc, Calvin Opiti, Opiti, Geospatial Engineer, SpatioTemporal, Opiti Consulting">
+
+	<title>County Accident Data</title>
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="194x194" href="{{ url_for('static', filename='favicons/favicon-194x194.png') }}">
+	<link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='favicons/android-chrome-192x192.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+	<link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}">
+	<link rel="mask-icon" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}" color="#5bbad6">
+	<meta name="msapplication-TileColor" content="#00aba9">
+	<meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicons/mstile-144x144.png') }}">
+	<meta name="theme-color" content="#ffffff">
     
 	<link href="{{ url_for('static', filename='js_libs/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"/>
 	<link rel="stylesheet" href="{{ url_for('static', filename='js_libs/jquery-ui-1.12.1/jquery-ui.min.css') }}" />
@@ -133,5 +146,14 @@
 			}
 		});
 	</script> -->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+	  
+		gtag('config', 'UA-106069296-1');
+	</script>
 </body>
 </html>
