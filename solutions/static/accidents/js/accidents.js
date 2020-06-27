@@ -9,6 +9,15 @@ var county = new ol.layer.Vector({
     format: new ol.format.GeoJSON()
   })
 });
+// heatmap section 
+let heatmapLayer = new ol.layer.Heatmap({
+  // source: new VectorSource(),
+  source: new ol.source.Vector(),
+  radius: 8,
+  // shadow: 500,
+  blur:15
+});
+// end of heatmap sectipn
 
 var accident_source = new ol.source.Vector({
     url: '/accidents/accidentsGeoJSON/?county=null',
@@ -16,12 +25,13 @@ var accident_source = new ol.source.Vector({
   });
 
 var accident = new ol.layer.Vector({
+  // visible: false,
   source: accident_source
 });
 
 var map = new ol.Map({
-  layers: [raster, county, accident],
-  // layers: ['raster'],
+  layers: [raster, county, accident, heatmapLayer],
+  // layers: [raster, county, heatmapLayer],
   target: 'map',
   view: new ol.View({
     // center: [0, 0],
@@ -43,6 +53,9 @@ select.on('select', function(e) {
   //   url: '/accidents/accidentsGeoJSON/?county='+e.target.getFeatures().getArray()[0].get('name'),
   //   format: new ol.format.GeoJSON()
   // });
+  
+  let extent = e.target.getFeatures().getArray()[0].getGeometry().getExtent();
+  map.getView().fit(extent);
   accident.getSource().setUrl('/accidents/accidentsGeoJSON/?county='+e.target.getFeatures().getArray()[0].get('name'));
   accident.getSource().refresh();
   fetch('/accidents/accidentsStatistics/?county='+e.target.getFeatures().getArray()[0].get('name'))
@@ -57,8 +70,24 @@ select.on('select', function(e) {
     flash("Query for accident data succcessful",{
       'bgColor': "#51B155"
     });
+    // heatmap section
+    // heatmapLayer.getSource().clear();
+    let featList = accident.getSource().getFeatures();  //  this.source  get the target features 
+    // console.log(featList[0]);
+    for(let item of featList ) {              //  copy the feature to the heatmap layer
+          let geometry = item.get('geometry');
+          let coordinate = geometry.flatCoordinates;
+          let feature = new ol.Feature({
+              geometry: new ol.geom.Point(coordinate),
+          })
+          heatmapLayer.getSource().addFeature(feature);
+    }
+    // heatmapLayer.getSource().refresh();
+    // this.map.addLayer(heatmapLayer);  //  add heatmap layer to map
+
+    // end of heatmap section
+
     // graph function will go here
-    // console.log(responseData);
     let dataLabels = []
     let no_of_accidents = []
     let no_of_casualties = []
