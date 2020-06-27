@@ -70,7 +70,8 @@ def viewAccidentsGeoJSON():
                return make_response(jsonify(f"NO data available for county name {args['county']}.")),404
 
         else:
-            return make_response(jsonify("county name not provided")),400
+            # return make_response(jsonify("county name not provided")),204
+            return make_response(),204
 
 @county.route('/accidentsStatistics/', methods=['GET'])
 def get_graph_stats_data():
