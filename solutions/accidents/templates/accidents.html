@@ -46,7 +46,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<p>This application displays <strong>road accident statistics (year 2014)</strong> for counties in England, overlaid over a map with accompanying graph data. On county selection, a request is made to the server and postgis database, which undertakes a spatial <strong>Intersect</strong>query. 
+					<p>This application displays <strong>road accident statistics (year 2014)</strong> for counties in England, overlaid over a map with accompanying graph data. On county selection, a request is made to the server and postgis database, which undertakes a spatial <strong>Intersect</strong> query. 
 						The response geojson data with reported accident locations is plotted while the aggregate statistical data extracted from the response is used to create the chart.</p>
 					<p>This application is developed with or utilises the following tools:</p>
 					<ul>
@@ -102,50 +102,6 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js_libs/Flash-Toast-Notification/flash.min.js')}}"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 	
-	<!-- <script>
-		var ctx = document.getElementById('myChart').getContext('2d');
-		var data = {
-			labels: ["Level 1", "Level 3", "Level 3"],
-			datasets: [
-				{
-					label: "No of Accidents",
-					backgroundColor: "rgba(54, 162, 235, 0.2)",
-					borderColor: "rgba(54, 162, 235, 1)",
-					borderWidth: 1,
-					data: [29,331,1384]
-				},
-				{
-					label: "No of Casulties",
-					backgroundColor: "rgba(255, 99, 132, 0.2)",
-					borderColor: "rgba(255, 99, 132, 1)",
-					borderWidth: 1,
-					data: [47,461,1809]
-				},
-				{
-					label: "No of Vehicles",
-					backgroundColor: "rgba(255, 206, 86, 0.2)",
-					borderColor: "rgba(255, 206, 86, 1)",
-					borderWidth: 1,
-					data: [43,599,2616]
-				}
-			]
-		};
-		
-		var myChart = new Chart(ctx, {
-			type: 'bar',
-			data: data,
-			options: {
-				barValueSpacing: 20,
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true
-						}
-					}]
-				}
-			}
-		});
-	</script> -->
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
 	<script>
