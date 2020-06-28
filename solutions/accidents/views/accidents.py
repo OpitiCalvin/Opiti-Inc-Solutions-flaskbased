@@ -61,11 +61,17 @@ def viewAccidentsGeoJSON():
             if county_select:
                 # print("county record exists")
                 geojson_data = retrieve_accidents_data_as_geojson(fields=['accident_index','accident_severity','number_of_vehicles','number_of_casualties','date'],county_name=str(args['county']), county_geom='geom',accident_geom='geom')
+                stats = severity_stats(geojson_data)
                 # filepath = Path(current_app.instance_path) / 'geodataset.geojson'
                 # with open(str(filepath), 'w') as outfile:
                 #     outfile.write(json.dumps(geojson_data, indent=4))
                 # print(geojson_data)
-                return jsonify(geojson_data)
+                return jsonify({
+                    "status_code": 200,
+                    "message": f"Query for accident data for {args['county']} county successful.",
+                    "geojson_data": geojson_data,
+                    "stats_data": stats
+                })
             else:
                return make_response(jsonify(f"NO data available for county name {args['county']}.")),404
 
