@@ -59,16 +59,14 @@ def retrieve_accidents_data_as_geojson(fields, county_name, county_geom, acciden
                 ) as feature
             FROM (
                 SELECT ST_Transform(a.{accident_geom}, {OUTPUT_SRID}) as geom {fields}
-                FROM county as c, accident as a
-                WHERE c.name = '{county_name}' and ST_Within(a.{accident_geom}, c.{county_geom})
+                FROM county as c
+                JOIN accident as a
+                ON ST_Within(a.{accident_geom}, c.{county_geom})
+                    AND c.name = '{county_name}' 
             ) as inputs
         ) features
     """
-    #     SELECT a.accident_index, a.accident_severity, a.geom
-    # FROM county c, accident a
-    # WHERE c.name = 'Cumbria County' and
-    # 	ST_Within(a.geom,c.geom)
-
+    
     # table_name = 'accident'
     # fields = ", name"
     fields = ','+','.join(map(str,fields))
