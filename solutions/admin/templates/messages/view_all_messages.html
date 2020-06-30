@@ -80,6 +80,9 @@
             </tr>
         </tfoot>
     </table>
+    {% else %}
+    <p> No messages to display. </p>
+    {% endif %}
 
     <div hidden id="spinner"></div>
     <!-- Read Message modal -->
@@ -148,10 +151,7 @@
             </div>
         </div>
     </div>
-    <!-- modal end -->
-    {% else %}
-    <p> No roles data available. </p>
-    {% endif %}
+    <!-- modal end -->    
 </div>
 
 <hr>
