@@ -20,7 +20,15 @@ def user_loader(user_id):
 def index():
 	r"""Main route for home page."""
 
-	return render_template('index.html')
+	# return render_template('index.html')
+	return render_template('new_index.html')
+
+@site.route('/new', methods=['GET'])
+def new_index():
+	r"""Main route for home page."""
+
+	return render_template('new_index.html')
+
 
 @site.route('/contact', methods=['GET', 'POST'])
 def contact():
