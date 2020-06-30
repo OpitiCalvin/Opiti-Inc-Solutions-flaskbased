@@ -1,0 +1,126 @@
+{% extends "new_base.html" %}
+
+{% block bodyContent %}
+<div class="content-header row">
+    <div class="content-header-left col-md-9 col-12 mb-2">
+        <div class="row breadcrumbs-top">
+            <div class="col-12">
+                <h2 class="content-header-title float-left mb-0">Opiti Inc: Solutions</h2>
+                <div class="breadcrumb-wrapper col-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('site.new_index') }}">Home</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+        <div class="form-group breadcrum-right">
+            <div class="dropdown">
+                <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="feather icon-settings"></i></button>
+                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Chat</a><a class="dropdown-item" href="#">Email</a><a class="dropdown-item" href="#">Calendar</a></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="content-body">
+    <div class="row match-height">
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <img class="card-img-top img-fluid d-card-img" src="{{ url_for('static', filename='images/global-map.png') }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5>Online Mapping Tool</h5>
+                        <p class="card-text  mb-0">A platform for online uploading and simple visualizaation of spatial data of formats ESRI Shapefile (archived) or GeoJSON.</p>
+                        <span class="card-text">JavaScript, LeafLet, shpjs</span>
+                        <div class="card-btns d-flex justify-content-between mt-2">
+                            <a href="#" class="btn gradient-light-primary text-white">More Info</a>
+                            <a href="#" class="btn btn-outline-primary">View Solution</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <img class="card-img-top img-fluid d-card-img" src="{{ url_for('static', filename='images/icon-map_digitize.jpg') }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5>D&amp;D: Digitize and Download</h5>
+                        <p class="card-text  mb-0">A web-GIS application allowing you to carry out on-screen digitization and downloading of your data as, either, GeoJSON or zipped ESRI Shapefile.</p>
+                        <span class="card-text">JavaScript, LeafLet, shpjs</span>
+                        <div class="card-btns d-flex justify-content-between mt-2">
+                            <a href="#" class="btn gradient-light-primary text-white">More Info</a>
+                            <a href="#" class="btn btn-outline-primary">View Solution</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <img class="card-img-top img-fluid d-card-img" src="{{ url_for('static', filename='images/webGIS.jpg') }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5>Enterprise WebGIS</h5>
+                        <p class="card-text  mb-0">Development of data and net-centric GIS and Remote Sensing applications, facilitating spatial data &amp; informations sharing, within an enterprise.</p>
+                        <span class="card-text">JavaScript, LeafLet, shpjs</span>
+                        <div class="card-btns d-flex justify-content-between mt-2">
+                            <a href="#" class="btn gradient-light-primary text-white">More Info</a>
+                            <a href="#" class="btn btn-outline-primary">View Solution</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <img class="card-img-top img-fluid d-card-img" src="{{ url_for('static', filename='images/chicago_std_prevalence.png') }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5>Chicago Project</h5>
+                        <p class="card-text  mb-0">A Look into spatial analysis and modelling of the spread of Sexually Transmitted Infections (STIs) in relation to their causal socio-economic factors.</p>
+                        <span class="card-text">Python, Scipy</span>
+                        <div class="card-btns d-flex justify-content-between mt-2">
+                            <a href="#" class="btn gradient-light-primary text-white">More Info</a>
+                            <a href="https://bitbucket.org/opiticalvin/chicago-std-spatial-analysis/src/master/" target="_blank" class="btn btn-outline-primary">View Notebooks</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content">
+                    <img class="card-img-top img-fluid d-card-img" src="{{ url_for('static', filename='images/pie-chart.jpg') }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5>County Statistics: Accidents</h5>
+                        <p class="card-text  mb-0">An online statistical map application for county accident statistics in England.</p>
+                        <span class="card-text">Python Flask, LeafLet JS, Chart JS, PostGIS</span>
+                        <div class="card-btns d-flex justify-content-between mt-2">
+                            <a href="#" class="btn gradient-light-primary text-white">More Info</a>
+                            <a href="#" class="btn btn-outline-primary">View Solution</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106069296-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-106069296-1');
+</script>
+{% endblock %}
