@@ -1,88 +1,99 @@
-{% extends "base.html" %}
+{% extends "new_base.html" %}
 {% block styles %}
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet"> -->
 <link href="{{ url_for('static', filename='js_libs/intl-tel-input/css/intlTelInput.min.css')}}" rel="stylesheet">
-<style type="text/css">
-	.hiddenField {
-		display: None;
-	}
-	.asteriskField {
-		color: red;
-	}
-</style>
+
 {% endblock %}
 
-{% block body %}
-<div class="container">
-	<div class="row">
-		<div class="col-md-5 col-md-push-1 animate-box">			
-			<div class="fh5co-contact-info">
-				<h3>Contact Information</h3>
-				<ul>
-					<li class="address">1066 Burnertt Street, <br> Hatfield, Pretoria, South Africa</li>
-					<li class="phone"><a href="tel://810622237">+ 27 81 062 2237</a></li>
-					<li class="email"><a href="mailto:opiticalvin@gmail.com">opiticalvin@gmail.com</a></li>
-					<li class="url"><a href="https://www.opiticonsulting.com">Opiti Inc</a></li>
-				</ul>
+{% block bodyContent %}
+<!-- // Basic Floating Label Form section start -->
+<section id="floating-label-layouts">
+	<div class="row match-height">
+		<div class="col-md-6 col-12">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title">Contact Information</h4>
+				</div>
+				<div class="card-content">
+					<div class="card-body">
+						<div class="fh5co-contact-info">
+							<ul>
+								<li class="address">1066 Burnertt Street, <br> Hatfield, Pretoria, South Africa</li>
+								<li class="phone"><a href="tel://810622237">+ 27 81 062 2237</a></li>
+								<li class="phone"><a href="tel://729529209">+ 254 729 529 209</a></li>
+								<li class="email"><a href="mailto:opiticalvin@gmail.com">opiticalvin@gmail.com</a></li>
+								<li class="url"><a href="https://www.opiticonsulting.com">Opiti Inc</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
-
 		</div>
-		<div class="col-md-6 animate-box">
-			<h3>Get In Touch</h3>
-			<form id="msgForm" action="{{ url_for('site.contact') }}" method="POST">
-				<div class="row form-group">
-					<div class="col-md-12">
-						<label for="name">Names</label>
-						<input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
-					</div>
-					<!-- <div class="col-md-6">
-						<label for="lname">Last Name</label>
-						<input type="text" id="lname" name="lname" class="form-control" placeholder="Your lastname" required>
-					</div> -->
-				</div>
 
-				<div class="row form-group">
-					<div class="col-md-6">
-						<label for="phone">Phone</label>
-						<input type="tel" id="phone" name="phone" class="form-control" placeholder="012345678">
-					</div>
-					<div id="phone_valid" class="form-group hiddenField"></div>
-					<div class="col-md-6">
-						<label for="country">Country</label>
-						<input type="text" id="country" name="country" class="form-control" placeholder="Country" readonly>
-						<input type="text" id="country_code" name="country_code" class="form-control hiddenField" placeholder="Country Code" readonly>
+		<div class="col-md-6 col-12">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title">Get In Touch</h4>
+				</div>
+				<div class="card-content">
+					<div class="card-body">
+						<form class="form" id="msgForm" action="" method="POST">
+							<div class="form-body">
+								<div class="row">
+									<div class="col-12">
+										<div class="form-label-group">
+											<input type="text" id="name" class="form-control" placeholder="Your Name" name="name" required>
+											<label for="name">Names</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-label-group">
+											<input type="email" id="email" class="form-control" name="email" placeholder="Your E-mail Address" required>
+											<label for="email">Email Address</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-label-group">
+											<input type="tel" id="phone" class="form-control" name="phone" placeholder="012345678">
+											<label for="phone">Phone Number</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="form-label-group hiddenField">
+											<input type="text" id="country" name="country" class="form-control" placeholder="Country" readonly>
+											<input type="text" id="country_code" name="country_code" class="form-control hiddenField" placeholder="Country Code" readonly>
+										</div>
+										<div class="form-label-group hiddenField" id="phone_valid"></div>
+									</div>
+									
+									<div class="col-12">
+										<div class="form-label-group">
+											<input type="text" id="subject" class="form-control" name="subject" placeholder="Your subject to this message" required>
+											<label for="subject">Subject</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<fieldset class="form-label-group">
+											<textarea class="form-control" id="message" cols="30" rows="10" placeholder="Your message here" required></textarea>
+											<label for="message">Message</label>
+										</fieldset>
+									</div>
+									<div class="col-12">
+										<button type="submit" id="submitBtn" class="btn btn-primary mr-1 mb-1">Send Message</button>
+										<button type="reset" class="btn btn-outline-warning mr-1 mb-1">Reset</button>
+									</div>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
-
-				<div class="row form-group">
-					<div class="col-md-12">
-						<label for="email">Email</label>
-						<input type="email" id="email" name="email" class="form-control" placeholder="Your email address" required>
-					</div>
-				</div>
-
-				<div class="row form-group">
-					<div class="col-md-12">
-						<label for="subject">Subject</label>
-						<input type="text" id="subject" name="subject" class="form-control" placeholder="Your subject of this message" required>
-					</div>
-				</div>
-
-				<div class="row form-group">
-					<div class="col-md-12">
-						<label for="message">Message</label>
-						<textarea name="message" id="message" name="message" cols="30" rows="10" class="form-control" placeholder="Your message here" required></textarea>
-					</div>
-				</div>
-				<div class="form-group">
-					<input id="submitBtn" type="submit" value="Send Message" class="btn btn-lg btn-primary">
-				</div>
-
-			</form>		
+			</div>
 		</div>
 	</div>
-			
-</div>
+</section>
+<!-- // Basic Floating Label Form section end -->
+
+
 {% endblock %}
 {% block scripts%}
 <script type="text/javascript" src="{{ url_for('static', filename='js_libs/intl-tel-input/js/intlTelInput.min.js')}}"></script>
