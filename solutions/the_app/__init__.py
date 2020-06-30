@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -7,11 +7,16 @@ from flask_login import LoginManager
 
 from pathlib import Path
 
+# from home.views.error_handling import page_not_found
+
 db = SQLAlchemy()
 # ma = Marshmallow()
 migrate = Migrate()
 jwt = JWTManager()
 login_manager = LoginManager()
+
+def page_not_found(e):
+	return render_template('error_pages/error-404.html'), 404
 
 def create_app():
 	r"""
@@ -27,6 +32,9 @@ def create_app():
 
 	initialize_extension(app)
 	register_blueprints(app)
+
+	# include error pages
+	app.register_error_handler(404, page_not_found)
 	
 	return app
 
