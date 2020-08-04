@@ -1,9 +1,9 @@
 
-var raster = new ol.layer.Tile({
+let raster = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
 
-var county = new ol.layer.Vector({
+let county = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: '/accidents/countyGeoJSON',
     format: new ol.format.GeoJSON()
@@ -17,7 +17,7 @@ let heatmapLayer = new ol.layer.Heatmap({
 });
 // end of heatmap section
 
-// var accident_source = new ol.source.Vector({
+// let accident_source = new ol.source.Vector({
 //     // url: '/accidents/accidentsGeoJSON/?county=null',
 //     format: new ol.format.GeoJSON()
 // });
@@ -28,7 +28,7 @@ let heatmapLayer = new ol.layer.Heatmap({
 // });
 window.accident = new ol.layer.Vector();
 
-var map = new ol.Map({
+let map = new ol.Map({
   layers: [raster, county, accident, heatmapLayer],
   // layers: [raster, county, heatmapLayer],
   target: 'map',
@@ -39,7 +39,7 @@ var map = new ol.Map({
   })
 });
 
-var select = new ol.interaction.Select({
+let select = new ol.interaction.Select({
   layers:[county]
 });
 
@@ -70,6 +70,9 @@ select.on('select', function(e) {
         flash(response['message'],{
           'bgColor': "#51B155"
         });
+
+        let chartHasBeenRendered = false;
+        let myChart;
 
         let geojs_source = new ol.source.Vector({
           features: (new ol.format.GeoJSON()).readFeatures(response["geojson_data"],{ 
@@ -102,16 +105,18 @@ select.on('select', function(e) {
 
         let accidentStatistics = response["stats_data"];
 
-        for (level in accidentStatistics){
+        for (let level in accidentStatistics){
           dataLabels.push("Level "+level);
           no_of_accidents.push(accidentStatistics[level]["accident_count"])
           no_of_casualties.push(accidentStatistics[level]['casualty_total'])
           no_of_vehicles.push(accidentStatistics[level]["vehicle_total"])
         }
 
-        $('#myChart').empty();
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var severityData = {
+        $('#chartDiv').empty();
+        $("#chartDiv").append('<canvas id="myChart" width="400" height="400"></canvas>');
+        
+        let ctx = document.getElementById('myChart').getContext('2d');
+        let severityData = {
           // labels: ["Level 1", "Level 2", "Level 3"],
           labels: dataLabels,
           datasets: [
@@ -142,7 +147,11 @@ select.on('select', function(e) {
           ]
         };
         
-        var myChart = new Chart(ctx, {
+        if (chartHasBeenRendered){
+          myChart.destroy();
+          myChart.clear();
+        }
+        myChart = new Chart(ctx, {
           type: 'bar',
           data: severityData,
           options: {
@@ -160,6 +169,7 @@ select.on('select', function(e) {
             }
           }
         });
+        chartHasBeenRendered = true;
       }
     })
     .catch(error => {
