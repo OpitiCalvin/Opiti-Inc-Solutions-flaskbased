@@ -16,5 +16,5 @@ api = Api(
     description = "APIs developed and managed by OPITI INC."
 )
 
-api.add_namespace(ns_messages, path="messages")
-api.add_namespace(ns_auth, path="auth")
+api.add_namespace(ns_messages, path="/messages")
+api.add_namespace(ns_auth, path="/auth")

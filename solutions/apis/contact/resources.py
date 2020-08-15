@@ -88,6 +88,7 @@ class MessagesResource(Resource):
                 400,
                 message = "Bad Request: No input data provided."
             )
+        # print(data)
         validation_errors = message_schema.validate(data)
         if validation_errors:
             return abort(
