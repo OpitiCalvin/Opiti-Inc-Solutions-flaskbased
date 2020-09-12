@@ -109,8 +109,9 @@ class UserQuerySchema(Schema):
     username = fields.String()
     email = fields.String()
     role_id = fields.Integer()
-    role  =fields.Nested(RoleInfoSchema)
+    role = fields.Nested(RoleInfoSchema)
 
+    last_log_in = fields.Date()
     created_by = fields.String()
     created = fields.Date()
     updated_by = fields.String()

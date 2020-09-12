@@ -137,9 +137,9 @@ def user_login():
 
 		if UserModel.verify_hash(user.password, form.password.data):
 			user.authenticated = True
-			user.last_logged_in = user.current_logged_in
+			user.last_log_in = user.current_logged_in
 			user.current_logged_in = datetime.now()
-			db.session.add(user)
+			# db.session.add(user)
 			db.session.commit()
 			# print(form.remember_me.data)
 			if form.remember_me.data:
@@ -162,7 +162,7 @@ def user_logout():
 
 	user = current_user
 	user.authenticated = False
-	db.session.add(user)
+	# db.session.add(user)
 	db.session.commit()
 
 	logout_user()
