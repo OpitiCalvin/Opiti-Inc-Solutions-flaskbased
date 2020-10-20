@@ -118,10 +118,10 @@
 
  	input.addEventListener('countrychange', function(){
  		let numb = intlTelInputUtils.formatNumber(iti.getNumber(), null, intlTelInputUtils.numberFormat.NATIONAL);
- 		if (iti.isValidNumber()){
- 			iti.setNumber(numb);
- 			country.value = iti.getSelectedCountryData()['name'];
- 			$("#country_code").val(iti.getSelectedCountryData()['iso2']);
+ 		country.value = iti.getSelectedCountryData()['name'];
+		$("#country_code").val(iti.getSelectedCountryData()['iso2']);
+		 if (iti.isValidNumber()){
+ 			iti.setNumber(numb); 			
 			$("#phone_valid").empty();
  			$("#phone_valid").addClass('hiddenField');
  			$("#submitBtn").prop('disabled', false);
