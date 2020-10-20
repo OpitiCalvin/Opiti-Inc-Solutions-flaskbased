@@ -32,7 +32,7 @@
 			<form id="msgForm" action="{{ url_for('site.contact') }}" method="POST">
 				<div class="row form-group">
 					<div class="col-md-12">
-						<label for="name">Names</label>
+						<label for="name">Names<span style="color: red;"> *</span></label>
 						<input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
 					</div>
 					<!-- <div class="col-md-6">
@@ -46,31 +46,31 @@
 						<label for="phone">Phone</label>
 						<input type="tel" id="phone" name="phone" class="form-control" placeholder="012345678">
 					</div>
-					<div id="phone_valid" class="form-group hiddenField"></div>
 					<div class="col-md-6">
 						<label for="country">Country</label>
 						<input type="text" id="country" name="country" class="form-control" placeholder="Country" readonly>
 						<input type="text" id="country_code" name="country_code" class="form-control hiddenField" placeholder="Country Code" readonly>
 					</div>
 				</div>
-
+				<div id="phone_valid" class="form-group hiddenField"></div>
+					
 				<div class="row form-group">
 					<div class="col-md-12">
-						<label for="email">Email</label>
+						<label for="email">Email<span style="color: red;"> *</span></label>
 						<input type="email" id="email" name="email" class="form-control" placeholder="Your email address" required>
 					</div>
 				</div>
 
 				<div class="row form-group">
 					<div class="col-md-12">
-						<label for="subject">Subject</label>
+						<label for="subject">Subject<span style="color: red;"> *</span></label>
 						<input type="text" id="subject" name="subject" class="form-control" placeholder="Your subject of this message" required>
 					</div>
 				</div>
 
 				<div class="row form-group">
 					<div class="col-md-12">
-						<label for="message">Message</label>
+						<label for="message">Message<span style="color: red;"> *</span></label>
 						<textarea name="message" id="message" name="message" cols="30" rows="10" class="form-control" placeholder="Your message here" required></textarea>
 					</div>
 				</div>
@@ -88,11 +88,11 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js_libs/intl-tel-input/js/intlTelInput.min.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js_libs/Flash-Toast-Notification/flash.min.js')}}"></script>
 <script>
-	var input = document.querySelector('#phone');
-  	// var phone = document.getElementById("phone");
-  	var country = document.getElementById("country");
+	let input = document.querySelector('#phone');
+  	// let phone = document.getElementById("phone");
+  	let country = document.getElementById("country");
 
-  	// var iti = intlTelInput(input,{
+  	// let iti = intlTelInput(input,{
   	window.iti = window.intlTelInput(input,{
   		nationalMode: true,
   		placeholderNumberType: "FIXED_LINE_OR_MOBILE",
@@ -106,6 +106,7 @@
  			iti.setNumber(numb);
  			country.value = iti.getSelectedCountryData()['name'];
  			$("#country_code").val(iti.getSelectedCountryData()['iso2']);
+			$("#phone_valid").empty(); 
  			$("#phone_valid").addClass('hiddenField');
  			$("#submitBtn").prop('disabled', false);
  		} else {
@@ -121,6 +122,9 @@
  			iti.setNumber(numb);
  			country.value = iti.getSelectedCountryData()['name'];
  			$("#country_code").val(iti.getSelectedCountryData()['iso2']);
+			$("#phone_valid").empty();
+ 			$("#phone_valid").addClass('hiddenField');
+ 			$("#submitBtn").prop('disabled', false);
  		} else {
  			if (phone.value){
  				$("#phone_valid").removeClass('hiddenField');
