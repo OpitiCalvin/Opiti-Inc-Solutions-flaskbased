@@ -17,16 +17,16 @@ class Config(object):
 	if FLASK_ENV == 'development':
 		DEBUG = True
 		SECRET_KEY = os.getenv("SECRET_KEY")
-		if 'POSTGRES' in os.environ:
-			POSTGRES = json.loads(os.environ.get('POSTGRES'))
-		elif "PGUSER" in os.environ and "PGPW" in os.environ and "PGHOST" in os.environ and "PGPORT" in os.environ and "PGDB" in os.environ:
-			POSTGRES = dict(user=os.environ.get("PGUSER"),pw=os.environ.get("PGPW"),host=os.environ.get("PGHOST"),port=os.environ.get("PGPORT"),db=os.environ.get("PGDB"))
-		else:
-			print("Postgresql configuration parameters not found.")	
-			exit(1)
+		# if 'POSTGRES' in os.environ:
+		# 	POSTGRES = json.loads(os.environ.get('POSTGRES'))
+		# elif "PGUSER" in os.environ and "PGPW" in os.environ and "PGHOST" in os.environ and "PGPORT" in os.environ and "PGDB" in os.environ:
+		# 	POSTGRES = dict(user=os.environ.get("PGUSER"),pw=os.environ.get("PGPW"),host=os.environ.get("PGHOST"),port=os.environ.get("PGPORT"),db=os.environ.get("PGDB"))
+		# else:
+		# 	print("Postgresql configuration parameters not found.")	
+		# 	exit(1)
 		
-		# SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance', 'opiti_inc_solutions.sqlite')
-		SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+		SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'instance', 'opiti_inc_solutions.sqlite')
+		# SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 		
 	else:
 		TESTING = False
