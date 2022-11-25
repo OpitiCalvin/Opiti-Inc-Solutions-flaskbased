@@ -16,7 +16,6 @@ class Config(object):
 	
 	if FLASK_ENV == 'development':
 		DEBUG = True
-		# SECRET_KEY = "0e32f26c-5860-4da9-84bd-ca439074ba2a"
 		SECRET_KEY = os.getenv("SECRET_KEY")
 		# if 'POSTGRES' in os.environ:
 		# 	POSTGRES = json.loads(os.environ.get('POSTGRES'))
