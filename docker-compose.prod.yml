@@ -16,6 +16,7 @@ services:
 
   nginx:
     build: ./nginx
+    hostname: solutions.opiticonsulting.com
     volumes:
       - static_volume:/home/app/solutions/static
     ports:
