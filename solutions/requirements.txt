@@ -4,7 +4,7 @@ requests==2.24.0
 flask-sqlalchemy==2.4.4
 flask-migrate==2.5.3
 flask-marshmallow==0.13.0
-psycopg2
+# psycopg2
 flask-restx==0.2.0
 marshmallow-sqlalchemy
 python-dotenv==0.14.0
@@ -24,6 +24,7 @@ itsdangerous==1.1.0
 werkzeug==1.0.1
 markupsafe==1.1.1
 wtforms==2.3.3
-geoalchemy2==0.8.4
-geojson==2.5.0
-shapely==1.7.0
+# geoalchemy2==0.8.4
+# geojson==2.5.0
+# shapely==1.7.0
+gunicorn==20.1.0
