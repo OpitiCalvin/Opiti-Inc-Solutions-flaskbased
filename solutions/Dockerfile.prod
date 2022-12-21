@@ -1,0 +1,71 @@
+###############
+# BUILDER
+###############
+
+# pull official base image
+FROM python:3.7.13-alpine3.16 as builder
+
+# # Install dependencies for GIS
+# RUN set -ex \
+#     && apk add --no-cache \
+#     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+#     autoconf \
+#     automake \
+#     gcc \
+#     gdal-dev \
+#     geos \
+#     make \
+#     musl-dev \
+#     postgresql-dev
+# RUN ln -s /usr/lib/libgeos_c.so.1 /usr/local/lib/libgeos_c.so
+# RUN ln -s /usr/lib/libgdal.so.20.1.0 /usr/local.lib/libgdal.so
+
+WORKDIR /app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip3 install -U pip
+COPY requirements.txt .
+# RUN pip3 install -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.7.13-alpine3.16
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# Create app user
+RUN addgroup -S app && adduser -S app -G app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/solutions
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# install dependencies
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app_user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+ENTRYPOINT [ "python" ]
+
+CMD ["main.py", "runserver"]

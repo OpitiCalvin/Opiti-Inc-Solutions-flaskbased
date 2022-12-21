@@ -1,24 +1,23 @@
-version: '3.3'
+version: '3.8'
 
 services:
   the_app:
     build: ./solutions
-    # command: python manage.py runserver 0.0.0.0:3000
+    command: python manage.py runserver 0.0.0.0
     volumes:
       - ./solutions/:/app/
     ports:
       - 3000:3000
-    # env_file:
-    #   - ./sterkfontein-server/.env.dev
+    env_file:
+      - ./sterkfontein-server/.env.dev
 
-  # proxy:
-  #   build: ./nginx
-  #   restart: always
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - the_app
-  
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - the_app
+      
 #   db:
 #     image: postgis/postgis:13-3.2-alpine
 #     volumes:
@@ -28,6 +27,5 @@ services:
 #       - POSTGRES_PASSWORD=sterkfonteinadmin
 #       - POSTGRES_DB=sterkfontein_rdbms
 
-volumes:
+# volumes:
   # postgres_data:
-  the_app:
