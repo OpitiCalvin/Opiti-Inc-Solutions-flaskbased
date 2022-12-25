@@ -19,27 +19,12 @@ services:
     hostname: solutions.opiticonsulting.com
     volumes:
       - static_volume:/home/app/solutions/static
-      # - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      # - ./certbot/conf:/etc/letsencrypt/:ro
-      # - ./certbot/www:/var/www/certbot/:ro
+
     ports:
       - 1337:80
-      - 1338:443
     restart: always
     depends_on:
       - the_app
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     # - ./certbot/conf:/etc/letsencrypt/:rw
-  #     - ./certbot/www:/var/www/certbot/:rw
-      
-  # db:
-  #   image: postgis/postgis:13-3.2-alpine
-  #   volumes:
-  #     - postgres_data:/var/lib/postgres_data/
-  #   env_file:
-  #    - ./solutions/.env.prod.db
 
 volumes:
   static_volume:
