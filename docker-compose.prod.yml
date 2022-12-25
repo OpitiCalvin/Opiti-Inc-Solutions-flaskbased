@@ -19,17 +19,12 @@ services:
     hostname: solutions.opiticonsulting.com
     volumes:
       - static_volume:/home/app/solutions/static
+
     ports:
       - 1337:80
+    restart: always
     depends_on:
       - the_app
-      
-  # db:
-  #   image: postgis/postgis:13-3.2-alpine
-  #   volumes:
-  #     - postgres_data:/var/lib/postgres_data/
-  #   env_file:
-  #    - ./solutions/.env.prod.db
 
 volumes:
   static_volume:
